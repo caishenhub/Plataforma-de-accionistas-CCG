@@ -45,34 +45,25 @@ export const FINANCE_CONFIG = {
 
 // Acciones administrativas con integración Supabase
 export const adminSetYield = async (yieldValue: number) => {
-  // Guardado local (Inmediato)
   localStorage.setItem('CAISHEN_CURRENT_YIELD', yieldValue.toString());
-  
-  // Sincronización con Supabase (Asíncrono/Cloud)
   try {
     const { error } = await supabase
       .from('financial_config')
       .upsert({ id: 'current_config', yield: yieldValue, updated_at: new Date().toISOString() });
-    
     if (error) console.warn("Supabase Sync Error:", error.message);
   } catch (e) {
     console.error("Connection to Supabase failed");
   }
-
   window.dispatchEvent(new Event('finance_update'));
 };
 
 export const adminClosePeriod = async () => {
-  // Guardado local
   localStorage.setItem('CAISHEN_PERIOD_STATUS', 'CLOSED');
-  
-  // Sincronización Cloud
   try {
     await supabase
       .from('financial_config')
       .upsert({ id: 'current_config', is_closed: true, closed_at: new Date().toISOString() });
   } catch (e) {}
-
   window.dispatchEvent(new Event('finance_update'));
 };
 
@@ -81,12 +72,9 @@ export const adminPublishNotification = async (notification: AdminNotification) 
   if (!published.find(n => n.id === notification.id)) {
     const updated = [notification, ...published];
     localStorage.setItem('CAISHEN_PUBLISHED_NOTIFS', JSON.stringify(updated));
-    
-    // Cloud Sync
     try {
       await supabase.from('notifications').insert(notification);
     } catch (e) {}
-
     window.dispatchEvent(new Event('global_notification_update'));
   }
 };
@@ -154,8 +142,48 @@ export const MOCK_REPORTS: Report[] = [
     id: 'rep1', 
     title: 'Informe de Gestión Diciembre 2025', 
     date: '15 Dic, 2025', 
+    category: 'Mensual', 
+    summary: 'Rendimiento mensual consolidado del 2.25% y estado de liquidez del fondo.',
+    content: "Análisis detallado de la distribución de utilidades y métricas de crecimiento mensual..."
+  },
+  { 
+    id: 'rep2', 
+    title: 'Auditoría de Reserva Técnica Q4', 
+    date: '10 Dic, 2025', 
+    category: 'Auditoría', 
+    summary: 'Verificación del cumplimiento del 80% de fondo de reserva ante el AUM global.',
+    content: "El proceso de auditoría externa confirma que los activos de respaldo se encuentran debidamente custodiados..."
+  },
+  { 
+    id: 'rep3', 
+    title: 'Plan de Expansión Estratégica 2026', 
+    date: '05 Dic, 2025', 
+    category: 'Estrategia', 
+    summary: 'Hoja de ruta para la inclusión de activos inmobiliarios tokenizados en el próximo ejercicio.',
+    content: "Nuevos sectores de inversión han sido identificados para diversificar el riesgo de mercado..."
+  },
+  { 
+    id: 'rep4', 
+    title: 'Cumplimiento Normativo de Identidad (KYC)', 
+    date: '01 Dic, 2025', 
+    category: 'Normativa', 
+    summary: 'Actualización de protocolos de seguridad y validación de socios bajo estándares internacionales.',
+    content: "Se han reforzado los niveles de verificación para garantizar la integridad operativa del grupo..."
+  },
+  { 
+    id: 'rep5', 
+    title: 'Matriz de Riesgos y Mitigación Operativa', 
+    date: '28 Nov, 2025', 
+    category: 'Auditoría', 
+    summary: 'Evaluación de la correlación del fondo con el mercado de renta variable y coberturas aplicadas.',
+    content: "El informe destaca la resiliencia del portafolio ante fluctuaciones severas en el SPX..."
+  },
+  { 
+    id: 'rep6', 
+    title: 'Proyección de Dividendos Anuales 2025', 
+    date: '20 Nov, 2025', 
     category: 'Resumen Ejecutivo', 
-    summary: 'Rendimiento aplicado del 2.25% mensual.',
-    content: "Confirmación de utilidad operativa basada en el balance real del fondo..."
+    summary: 'Análisis comparativo de rendimientos históricos y proyecciones de cierre de año.',
+    content: "Estimaciones finales basadas en el crecimiento sostenido del capital bajo administración..."
   }
 ];

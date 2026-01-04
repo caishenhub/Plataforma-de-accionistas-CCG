@@ -21,8 +21,15 @@ const Reports: React.FC = () => {
 
   const filteredReports = MOCK_REPORTS.filter(report => {
     if (activeFilter === 'Todos') return true;
-    if (activeFilter === 'Resumen Ejecutivo') return report.category === 'Mensual';
-    if (activeFilter === 'Riesgos y Mitigación') return report.category === 'Auditoría';
+    
+    // Mapeo flexible para la UI
+    if (activeFilter === 'Resumen Ejecutivo') {
+      return report.category === 'Mensual' || report.category === 'Resumen Ejecutivo';
+    }
+    if (activeFilter === 'Riesgos y Mitigación') {
+      return report.category === 'Auditoría' || report.category === 'Riesgos y Mitigación';
+    }
+    
     return report.category === activeFilter;
   });
 
@@ -91,7 +98,6 @@ const Reports: React.FC = () => {
         </div>
       )}
 
-      {/* Modal View */}
       {selectedReport && (
         <ReportModal 
           report={selectedReport} 
