@@ -13,16 +13,9 @@ import {
 import ShareholderProfile from './ShareholderProfile';
 
 const MOCK_USERS = [
-  // ADMINISTRADOR (Ajustado: 60% - 300 Acciones para control total)
   { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', role: 'Super Admin', status: 'Activo', initials: 'CCG', color: 'bg-accent text-primary', shares: 300 },
-  
-  // ACCIONISTA PREFERENTE (Ajustado: 20% - 100 Acciones)
   { id: 'usr-220', uid: '#USR-220', name: 'Isabella Beron Garcia', email: 'i.beron@inversion.com', role: 'Accionista Preferente', status: 'Activo', initials: 'IB', color: 'bg-pink-100 text-pink-700', shares: 100 },
-
-  // USUARIO BASE REFERENCIA (4% - 20 Acciones)
   { id: 'usr-008', uid: '#USR-008', name: 'Juan Andres Suarez Zuluaga', email: 'j.suarez@caishencapital.com', role: 'Accionista', status: 'Activo', initials: 'JS', color: 'bg-blue-100 text-blue-700', shares: 20 },
-  
-  // BLOQUE 1.00% (10 socios - 5 Acciones c/u)
   { id: 'usr-202', uid: '#USR-202', name: 'María Fernanda Ríos', email: 'm.rios@finanzas.net', role: 'Accionista', status: 'Activo', initials: 'MR', color: 'bg-purple-100 text-purple-700', shares: 5 },
   { id: 'usr-203', uid: '#USR-203', name: 'Santiago Herrera', email: 's.herrera@partners.com', role: 'Accionista', status: 'Activo', initials: 'SH', color: 'bg-green-100 text-green-700', shares: 5 },
   { id: 'usr-204', uid: '#USR-204', name: 'Valentina Pardo', email: 'v.pardo@capital.io', role: 'Accionista', status: 'Activo', initials: 'VP', color: 'bg-orange-100 text-orange-700', shares: 5 },
@@ -33,8 +26,6 @@ const MOCK_USERS = [
   { id: 'usr-209', uid: '#USR-209', name: 'Andrés Felipe Salazar', email: 'a.salazar@equity.com', role: 'Accionista', status: 'Activo', initials: 'AS', color: 'bg-rose-100 text-rose-700', shares: 5 },
   { id: 'usr-210', uid: '#USR-210', name: 'Catalina Gómez', email: 'c.gomez@legacy.com', role: 'Accionista', status: 'Activo', initials: 'CG', color: 'bg-slate-100 text-slate-700', shares: 5 },
   { id: 'usr-211', uid: '#USR-211', name: 'Felipe Restrepo', email: 'f.restrepo@global.com', role: 'Accionista', status: 'Activo', initials: 'FR', color: 'bg-cyan-100 text-cyan-700', shares: 5 },
-
-  // BLOQUE MINORITARIO (8 socios)
   { id: 'usr-212', uid: '#USR-212', name: 'Paula Andrea Torres', email: 'p.torres@asset.com', role: 'Accionista', status: 'Activo', initials: 'PT', color: 'bg-lime-100 text-lime-700', shares: 4 },
   { id: 'usr-213', uid: '#USR-213', name: 'Sebastián Quintero', email: 's.quintero@capital.io', role: 'Accionista', status: 'Activo', initials: 'SQ', color: 'bg-emerald-100 text-emerald-700', shares: 4 },
   { id: 'usr-214', uid: '#USR-214', name: 'Juliana Castro', email: 'j.castro@inversion.net', role: 'Accionista', status: 'Activo', initials: 'JC', color: 'bg-violet-100 text-violet-700', shares: 4 },
@@ -51,14 +42,14 @@ const UserManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Todos los Estados');
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
-  
   const [isVerifying, setIsVerifying] = useState(false);
   const [pendingUser, setPendingUser] = useState<any | null>(null);
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
 
   const filteredUsers = useMemo(() => {
-    return MOCK_USERS.filter(user => {
+    // 1. Filtrar primero por búsqueda y status
+    const basicFiltered = MOCK_USERS.filter(user => {
       const matchesSearch = 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,6 +63,13 @@ const UserManagement: React.FC = () => {
 
       return matchesSearch && matchesStatus;
     });
+
+    // 2. Ordenar: Admin (admin-01) siempre arriba, el resto A-Z
+    return basicFiltered.sort((a, b) => {
+      if (a.id === 'admin-01') return -1;
+      if (b.id === 'admin-01') return 1;
+      return a.name.localeCompare(b.name);
+    });
   }, [searchTerm, statusFilter]);
 
   const handleRequestAccess = (user: any) => {
@@ -83,7 +81,6 @@ const UserManagement: React.FC = () => {
 
   const handleVerifyPin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    
     if (pin === MASTER_PIN) {
       setSelectedUser(pendingUser);
       setIsVerifying(false);
@@ -199,19 +196,16 @@ const UserManagement: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-accent/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setIsVerifying(false)} />
           <div className={`relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20 ${error ? 'animate-bounce' : ''}`}>
-            
             <div className="p-10 text-center space-y-8">
               <div className="mx-auto size-20 bg-accent rounded-[24px] flex items-center justify-center text-primary shadow-2xl border border-primary/20">
                 <ShieldCheck size={40} />
               </div>
-              
               <div className="space-y-3">
                 <h3 className="text-2xl font-black text-accent tracking-tighter uppercase">Verificación de Identidad</h3>
                 <p className="text-xs text-text-secondary font-medium px-4 leading-relaxed">
                   Confirma tu identidad como <span className="font-bold text-accent">Administrador Maestro</span> para acceder al perfil de <span className="font-bold text-accent">{pendingUser?.name}</span>.
                 </p>
               </div>
-
               <form onSubmit={handleVerifyPin} className="space-y-6">
                 <div className="relative group">
                   <input 
@@ -232,31 +226,13 @@ const UserManagement: React.FC = () => {
                     </div>
                   )}
                 </div>
-
                 <div className="pt-6 grid grid-cols-2 gap-4">
-                  <button 
-                    type="button"
-                    onClick={() => setIsVerifying(false)}
-                    className="px-6 py-4 rounded-2xl text-xs font-black text-text-muted hover:bg-gray-100 transition-all uppercase tracking-widest"
-                  >
-                    Cancelar
-                  </button>
-                  <button 
-                    type="submit"
-                    className="px-6 py-4 rounded-2xl bg-accent text-primary font-black text-xs uppercase tracking-widest shadow-xl hover:shadow-primary/20 hover:-translate-y-1 transition-all active:scale-95"
-                  >
-                    Autorizar
-                  </button>
+                  <button type="button" onClick={() => setIsVerifying(false)} className="px-6 py-4 rounded-2xl text-xs font-black text-text-muted hover:bg-gray-100 transition-all uppercase tracking-widest">Cancelar</button>
+                  <button type="submit" className="px-6 py-4 rounded-2xl bg-accent text-primary font-black text-xs uppercase tracking-widest shadow-xl hover:shadow-primary/20 hover:-translate-y-1 transition-all active:scale-95">Autorizar</button>
                 </div>
               </form>
             </div>
-
-            <button 
-              onClick={() => setIsVerifying(false)}
-              className="absolute top-6 right-6 p-2 text-text-muted hover:text-accent transition-colors"
-            >
-              <X size={24} />
-            </button>
+            <button onClick={() => setIsVerifying(false)} className="absolute top-6 right-6 p-2 text-text-muted hover:text-accent transition-colors"><X size={24} /></button>
           </div>
         </div>
       )}
