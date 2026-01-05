@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               <h3 className="text-accent text-lg md:text-xl font-extrabold tracking-tight">Evolución del Portafolio</h3>
-              <p className="text-text-muted text-[10px] font-medium">Fondo vs S&P 500</p>
+              <p className="text-text-muted text-[10px] font-medium uppercase tracking-widest">CCG vs SPY500</p>
             </div>
           </div>
           <div className="h-[280px] md:h-[350px] w-full">

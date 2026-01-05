@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// DATOS MOCK (Simplificados para brevedad en este bloque, asumiendo los mismos datos anteriores)
+// DATOS MOCK
 const data2022 = [
   { name: 'Ene', portfolio: 34272000, benchmark: 34106400, pYield: -4.80, bYield: -5.26 },
   { name: 'Feb', portfolio: 33038208, benchmark: 33035459, pYield: -3.60, bYield: -3.14 },
@@ -63,12 +63,8 @@ const data2025 = [
 const CustomTooltip = ({ active, payload, label, year }: any) => {
   if (active && payload && payload.length) {
     const item = payload[0].payload;
-    const diffValue = parseFloat((item.pYield - item.bYield).toFixed(2));
     const colorCaishen = item.pYield >= 0 ? 'text-primary' : 'text-red-400';
     const colorSP500 = item.bYield >= 0 ? 'text-white' : 'text-red-400';
-    let colorDiff = 'text-text-muted'; 
-    if (diffValue > 0) colorDiff = 'text-primary'; 
-    if (diffValue < 0) colorDiff = 'text-red-400'; 
     
     return (
       <div className="bg-[#1d1c2d] border-none rounded-2xl p-4 shadow-2xl ring-1 ring-white/10 scale-90 md:scale-100 origin-top-left">
@@ -77,13 +73,13 @@ const CustomTooltip = ({ active, payload, label, year }: any) => {
         </p>
         <div className="space-y-1.5 min-w-[150px]">
           <div className="flex justify-between items-center gap-6">
-            <span className="text-[11px] font-bold text-white/70">Caishen</span>
+            <span className="text-[11px] font-bold text-white/70 uppercase">CCG</span>
             <span className={`text-xs font-black ${colorCaishen}`}>
               {item.pYield > 0 ? '+' : ''}{item.pYield}%
             </span>
           </div>
           <div className="flex justify-between items-center gap-6">
-            <span className="text-[11px] font-bold text-white/70">S&P 500</span>
+            <span className="text-[11px] font-bold text-white/70 uppercase">SPY500</span>
             <span className={`text-xs font-black ${colorSP500}`}>
               {item.bYield > 0 ? '+' : ''}{item.bYield}%
             </span>
@@ -155,7 +151,7 @@ const PerformanceChart: React.FC = () => {
               align="right" 
               iconType="circle"
               wrapperStyle={{ paddingBottom: '20px', fontSize: '9px', fontWeight: 800, textTransform: 'uppercase' }}
-              formatter={(value) => <span className="text-text-main ml-1">{value === 'portfolio' ? 'Fondo' : 'Index'}</span>}
+              formatter={(value) => <span className="text-text-main ml-1">{value === 'portfolio' ? 'CCG' : 'SPY500'}</span>}
             />
             <Area 
               type="monotone" 
