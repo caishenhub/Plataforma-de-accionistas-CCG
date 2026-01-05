@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// DATOS 2022 (Verificados según tabla comparativa 2022)
+// DATOS MOCK (Simplificados para brevedad en este bloque, asumiendo los mismos datos anteriores)
 const data2022 = [
   { name: 'Ene', portfolio: 34272000, benchmark: 34106400, pYield: -4.80, bYield: -5.26 },
   { name: 'Feb', portfolio: 33038208, benchmark: 33035459, pYield: -3.60, bYield: -3.14 },
@@ -17,8 +17,6 @@ const data2022 = [
   { name: 'Nov', portfolio: 28467724, benchmark: 30820776, pYield: 3.20, bYield: 5.38 },
   { name: 'Dic', portfolio: 26731193, benchmark: 29002350, pYield: -6.10, bYield: -5.90 },
 ];
-
-// DATOS 2023 (Verificados según tabla comparativa 2023)
 const data2023 = [
   { name: 'Ene', portfolio: 39292000, benchmark: 40348400, pYield: 3.40, bYield: 6.18 },
   { name: 'Feb', portfolio: 40411822, benchmark: 39295306, pYield: 2.85, bYield: -2.61 },
@@ -33,8 +31,6 @@ const data2023 = [
   { name: 'Nov', portfolio: 47488166, benchmark: 45210405, pYield: 2.10, bYield: 8.92 },
   { name: 'Dic', portfolio: 48366697, benchmark: 47208705, pYield: 1.85, bYield: 4.42 },
 ];
-
-// DATOS 2024 (Verificados según tabla comparativa 2024)
 const data2024 = [
   { name: 'Ene', portfolio: 41240000, benchmark: 40636000, pYield: 3.10, bYield: 1.59 },
   { name: 'Feb', portfolio: 42250380, benchmark: 42736881, pYield: 2.45, bYield: 5.17 },
@@ -49,8 +45,6 @@ const data2024 = [
   { name: 'Nov', portfolio: 53745398, benchmark: 50584476, pYield: 1.75, bYield: 5.73 },
   { name: 'Dic', portfolio: 54793433, benchmark: 49319864, pYield: 1.95, bYield: -2.50 },
 ];
-
-// DATOS 2025 (Cierre proyectado y actual)
 const data2025 = [
   { name: 'Ene', portfolio: 41608000, benchmark: 41080000, pYield: 4.02, bYield: 2.70 },
   { name: 'Feb', portfolio: 40775840, benchmark: 40496664, pYield: -2.00, bYield: -1.42 },
@@ -69,41 +63,29 @@ const data2025 = [
 const CustomTooltip = ({ active, payload, label, year }: any) => {
   if (active && payload && payload.length) {
     const item = payload[0].payload;
-    
-    // DIFERENCIAL = Rendimiento Caishen - Rendimiento S&P 500
     const diffValue = parseFloat((item.pYield - item.bYield).toFixed(2));
-    
     const colorCaishen = item.pYield >= 0 ? 'text-primary' : 'text-red-400';
     const colorSP500 = item.bYield >= 0 ? 'text-white' : 'text-red-400';
-    
     let colorDiff = 'text-text-muted'; 
     if (diffValue > 0) colorDiff = 'text-primary'; 
     if (diffValue < 0) colorDiff = 'text-red-400'; 
     
     return (
-      <div className="bg-[#1d1c2d] border-none rounded-2xl p-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200 ring-1 ring-white/10">
+      <div className="bg-[#1d1c2d] border-none rounded-2xl p-4 shadow-2xl ring-1 ring-white/10 scale-90 md:scale-100 origin-top-left">
         <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 border-b border-white/5 pb-2">
           {label} {year}
         </p>
-        <div className="space-y-1.5 min-w-[170px]">
+        <div className="space-y-1.5 min-w-[150px]">
           <div className="flex justify-between items-center gap-6">
-            <span className="text-[11px] font-bold text-white/70">Portafolio Caishen</span>
+            <span className="text-[11px] font-bold text-white/70">Caishen</span>
             <span className={`text-xs font-black ${colorCaishen}`}>
               {item.pYield > 0 ? '+' : ''}{item.pYield}%
             </span>
           </div>
-          
           <div className="flex justify-between items-center gap-6">
             <span className="text-[11px] font-bold text-white/70">S&P 500</span>
             <span className={`text-xs font-black ${colorSP500}`}>
               {item.bYield > 0 ? '+' : ''}{item.bYield}%
-            </span>
-          </div>
-          
-          <div className="pt-2 mt-2 border-t border-white/10 flex justify-between items-center gap-6">
-            <span className="text-[11px] font-black text-text-muted uppercase tracking-tighter">Diferencial</span>
-            <span className={`text-xs font-black ${colorDiff}`}>
-              {diffValue > 0 ? '+' : ''}{diffValue.toFixed(2)}%
             </span>
           </div>
         </div>
@@ -115,7 +97,6 @@ const CustomTooltip = ({ active, payload, label, year }: any) => {
 
 const PerformanceChart: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(2025);
-  
   const getActiveData = () => {
     switch (selectedYear) {
       case 2022: return data2022;
@@ -124,21 +105,19 @@ const PerformanceChart: React.FC = () => {
       default: return data2025;
     }
   };
-
   const activeData = getActiveData();
 
   return (
-    <div className="w-full mt-4 space-y-6">
-      {/* Year Selector Tabs */}
-      <div className="flex justify-center sm:justify-start">
+    <div className="w-full h-full flex flex-col space-y-4">
+      <div className="flex justify-center md:justify-start">
         <div className="bg-surface-subtle p-1 rounded-2xl border border-surface-border flex gap-1 shadow-sm overflow-x-auto hide-scrollbar max-w-full">
           {[2022, 2023, 2024, 2025].map((year) => (
             <button
               key={year}
               onClick={() => setSelectedYear(year)}
-              className={`px-5 py-2 rounded-xl text-[10px] sm:text-xs font-black transition-all uppercase tracking-widest whitespace-nowrap ${
+              className={`px-4 py-2 rounded-xl text-[9px] md:text-xs font-black transition-all uppercase tracking-widest whitespace-nowrap ${
                 selectedYear === year 
-                ? 'bg-accent text-primary shadow-lg scale-105' 
+                ? 'bg-accent text-primary shadow-lg' 
                 : 'text-text-muted hover:text-accent'
               }`}
             >
@@ -148,66 +127,52 @@ const PerformanceChart: React.FC = () => {
         </div>
       </div>
 
-      <div className="h-80 w-full">
+      <div className="flex-1 w-full overflow-hidden">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart 
             data={activeData} 
-            margin={{ top: 10, right: 30, left: 20, bottom: 40 }}
+            margin={{ top: 10, right: 5, left: -10, bottom: 0 }}
           >
             <defs>
               <linearGradient id="colorPortfolio" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ceff04" stopOpacity={0.3} />
                 <stop offset="95%" stopColor="#ceff04" stopOpacity={0} />
               </linearGradient>
-              <linearGradient id="colorBenchmark" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#1d1c2d" stopOpacity={0.1} />
-                <stop offset="95%" stopColor="#1d1c2d" stopOpacity={0} />
-              </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
             <XAxis 
               dataKey="name" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fontSize: 11, fill: '#6B7280', fontWeight: 700 }}
-              dy={15}
-              height={60}
+              tick={{ fontSize: 9, fill: '#9CA3AF', fontWeight: 700 }}
+              interval="preserveStartEnd"
+              dy={10}
             />
-            <YAxis 
-              hide 
-              domain={['dataMin - 3000000', 'dataMax + 3000000']} 
-            />
-            <Tooltip 
-              content={<CustomTooltip year={selectedYear} />}
-              cursor={{ stroke: '#ceff04', strokeWidth: 1, strokeDasharray: '4 4' }}
-            />
+            <YAxis hide domain={['dataMin - 2000000', 'dataMax + 2000000']} />
+            <Tooltip content={<CustomTooltip year={selectedYear} />} />
             <Legend 
               verticalAlign="top" 
               align="right" 
               iconType="circle"
-              wrapperStyle={{ paddingBottom: '35px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' }}
-              formatter={(value) => <span className="text-text-main ml-1">{value === 'portfolio' ? 'Portafolio' : 'S&P 500'}</span>}
+              wrapperStyle={{ paddingBottom: '20px', fontSize: '9px', fontWeight: 800, textTransform: 'uppercase' }}
+              formatter={(value) => <span className="text-text-main ml-1">{value === 'portfolio' ? 'Fondo' : 'Index'}</span>}
             />
             <Area 
               type="monotone" 
               dataKey="benchmark" 
               name="benchmark"
               stroke="#1d1c2d" 
-              strokeWidth={2} 
-              strokeDasharray="5 5"
-              fillOpacity={1} 
-              fill="url(#colorBenchmark)" 
-              animationDuration={1500}
+              strokeWidth={1.5} 
+              strokeDasharray="4 4"
+              fill="transparent" 
             />
             <Area 
               type="monotone" 
               dataKey="portfolio" 
               name="portfolio"
               stroke="#ceff04" 
-              strokeWidth={4} 
-              fillOpacity={1} 
+              strokeWidth={3} 
               fill="url(#colorPortfolio)" 
-              animationDuration={1500}
             />
           </AreaChart>
         </ResponsiveContainer>

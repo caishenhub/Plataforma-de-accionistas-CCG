@@ -13,15 +13,15 @@ const data = [
 
 const AssetDonutChart: React.FC = () => {
   return (
-    <div className="w-full h-full relative min-h-[300px]">
+    <div className="w-full h-full relative">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius={90}
-            outerRadius={120}
+            innerRadius="65%"
+            outerRadius="85%"
             paddingAngle={4}
             dataKey="value"
             stroke="none"
@@ -45,8 +45,8 @@ const AssetDonutChart: React.FC = () => {
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className="text-text-muted text-[11px] font-bold uppercase tracking-widest mb-1">AUM Global</span>
-        <span className="text-accent text-3xl font-black tracking-tighter">
+        <span className="text-text-muted text-[9px] md:text-[11px] font-bold uppercase tracking-widest mb-1">AUM Global</span>
+        <span className="text-accent text-xl md:text-3xl font-black tracking-tighter">
           ${(FINANCE_CONFIG.GLOBAL_AUM / 1000).toFixed(1)}k
         </span>
       </div>

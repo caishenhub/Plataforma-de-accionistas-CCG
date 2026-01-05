@@ -1,8 +1,7 @@
 
 import React from 'react';
 import { 
-  Menu, 
-  Building2
+  Menu
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -20,21 +19,22 @@ const Header: React.FC<HeaderProps> = ({ title, onOpenMenu }) => {
         >
           <Menu className="size-6 text-accent" />
         </button>
-        <div>
-          <h2 className="text-accent text-base lg:text-lg font-extrabold tracking-tight">{title}</h2>
+        
+        {/* Identidad del portal con tamaño de fuente reducido un nivel */}
+        <div className="flex flex-col leading-none">
+          <span className="text-[11px] font-black text-accent tracking-tight uppercase">Portal de Accionistas</span>
+          <span className="text-[8.5px] font-bold text-text-secondary uppercase tracking-[0.2em] mt-1">Vista Consolidada</span>
         </div>
       </div>
 
       <div className="flex items-center">
-        {/* Corporate Identity Section */}
-        <div className="flex items-center gap-3 lg:gap-4">
-          <div className="hidden sm:flex flex-col items-end leading-tight">
-            <span className="text-sm font-black text-accent tracking-tight">Portal de Accionistas</span>
-            <span className="text-[11px] font-bold text-text-secondary">Vista Consolidada</span>
-          </div>
-          <div className="size-9 lg:size-10 rounded-full bg-surface-subtle border border-surface-border flex items-center justify-center text-text-secondary/60">
-            <Building2 className="size-[18px] lg:size-5" strokeWidth={2} />
-          </div>
+        {/* Identidad Corporativa - Logo a la derecha */}
+        <div className="h-10 lg:h-14 flex items-center justify-center">
+          <img 
+            src="https://i.ibb.co/zT3RhhT9/CAISHEN-NO-FONDO-AZUL-1.png" 
+            alt="Caishen Capital Logo" 
+            className="h-full w-auto object-contain drop-shadow-sm"
+          />
         </div>
       </div>
     </header>
