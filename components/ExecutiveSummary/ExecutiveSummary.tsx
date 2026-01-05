@@ -24,6 +24,11 @@ import { CorporateNotice } from '../../types';
 const ExecutiveSummary: React.FC = () => {
   const [selectedNotice, setSelectedNotice] = useState<CorporateNotice | null>(null);
 
+  // Clase común para las tarjetas de KPI para garantizar simetría
+  const kpiCardClass = "bg-white p-8 rounded-[35px] border border-surface-border shadow-sm flex flex-col justify-between min-h-[200px] hover:shadow-premium transition-all duration-300 group";
+  const labelClass = "text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-tight";
+  const valueClass = "text-4xl font-black text-accent tracking-tighter mt-2";
+
   return (
     <div className="p-4 md:p-8 pb-24 space-y-10 animate-in fade-in duration-700">
       {/* 1. Cabecera y Bienvenida */}
@@ -32,52 +37,78 @@ const ExecutiveSummary: React.FC = () => {
         <h1 className="text-accent text-3xl font-black tracking-tighter uppercase">Resumen consolidado del panorama financiero hoy</h1>
       </div>
 
-      {/* 2. Grid de KPIs (Referencia Visual 2) */}
+      {/* 2. Grid de KPIs Simétricos */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-7 rounded-[32px] border border-surface-border shadow-sm space-y-4">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Balance Total (AUM)</span>
-            <Wallet size={16} className="text-primary" />
-          </div>
-          <h3 className="text-3xl font-black text-accent tracking-tighter">$124.4k</h3>
-          <div className="bg-primary/20 text-accent text-[9px] font-black px-2 py-1 rounded-lg w-fit flex items-center gap-1">
-            <TrendingUp size={10} /> +39.8%
-          </div>
-        </div>
-
-        <div className="bg-white p-7 rounded-[32px] border border-surface-border shadow-sm space-y-4">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Utilidad Proyectada</span>
-            <LineChart size={16} className="text-accent/30" />
-          </div>
-          <h3 className="text-3xl font-black text-accent tracking-tighter">39.35%</h3>
-          <div className="h-4 w-full bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
-            <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)]" style={{ width: '85%' }}></div>
-          </div>
-        </div>
-
-        <div className="bg-white p-7 rounded-[32px] border border-surface-border shadow-sm space-y-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <span className="text-[10px] font-black text-text-muted uppercase tracking-widest block">Ajuste Controlado</span>
-              <span className="text-[8px] font-bold text-text-muted uppercase tracking-tight">Del Portafolio</span>
+        
+        {/* Balance Total */}
+        <div className={kpiCardClass}>
+          <div className="flex justify-between items-start w-full">
+            <span className={labelClass}>Balance Total<br/>(AUM)</span>
+            <div className="p-2 bg-primary/10 rounded-xl">
+              <Wallet size={18} className="text-accent" />
             </div>
-            <ShieldCheck size={16} className="text-primary" />
           </div>
-          <h3 className="text-3xl font-black text-accent tracking-tighter">3.2%</h3>
-          <div className="flex items-center justify-between">
-            <span className="bg-accent text-primary text-[9px] font-black px-3 py-1 rounded-lg uppercase tracking-widest">Establecido</span>
-            <Info size={12} className="text-primary" />
+          <div className="flex-1 flex flex-col justify-center">
+            <h3 className={valueClass}>$124.4k</h3>
+          </div>
+          <div className="mt-auto">
+            <div className="bg-primary/20 text-accent text-[10px] font-black px-3 py-1.5 rounded-xl w-fit flex items-center gap-1 shadow-sm">
+              <TrendingUp size={12} /> +39.8%
+            </div>
           </div>
         </div>
 
-        <div className="bg-white p-7 rounded-[32px] border border-surface-border shadow-sm space-y-4">
-          <div className="flex justify-between items-start">
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Estabilidad Estructural</span>
-            <Target size={16} className="text-accent/30" />
+        {/* Utilidad Proyectada */}
+        <div className={kpiCardClass}>
+          <div className="flex justify-between items-start w-full">
+            <span className={labelClass}>Utilidad<br/>Proyectada</span>
+            <div className="p-2 bg-surface-subtle rounded-xl">
+              <LineChart size={18} className="text-text-muted" />
+            </div>
           </div>
-          <h3 className="text-3xl font-black text-accent tracking-tighter">100%</h3>
-          <div className="h-1 bg-primary w-full rounded-full shadow-[0_0_8px_rgba(206,255,4,0.3)]"></div>
+          <div className="flex-1 flex flex-col justify-center">
+            <h3 className={valueClass}>39.35%</h3>
+          </div>
+          <div className="mt-auto w-full">
+            <div className="h-4 w-full bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
+              <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)] transition-all duration-1000" style={{ width: '85%' }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ajuste Controlado */}
+        <div className={kpiCardClass}>
+          <div className="flex justify-between items-start w-full">
+            <span className={labelClass}>Ajuste<br/>Controlado</span>
+            <div className="p-2 bg-primary/10 rounded-xl">
+              <ShieldCheck size={18} className="text-accent" />
+            </div>
+          </div>
+          <div className="flex-1 flex flex-col justify-center">
+            <h3 className={valueClass}>3.2%</h3>
+          </div>
+          <div className="mt-auto flex items-center justify-between w-full">
+            <div className="bg-accent text-primary text-[10px] font-black px-4 py-1.5 rounded-xl uppercase tracking-widest shadow-md">
+              Establecido
+            </div>
+            <Info size={14} className="text-text-muted opacity-50" />
+          </div>
+        </div>
+
+        {/* Estabilidad Estructural */}
+        <div className={kpiCardClass}>
+          <div className="flex justify-between items-start w-full">
+            <span className={labelClass}>Estabilidad<br/>Estructural</span>
+            <div className="p-2 bg-surface-subtle rounded-xl">
+              <Target size={18} className="text-text-muted" />
+            </div>
+          </div>
+          <div className="flex-1 flex flex-col justify-center">
+            <h3 className={valueClass}>100%</h3>
+          </div>
+          <div className="mt-auto w-full">
+            <div className="h-1.5 bg-primary w-full rounded-full shadow-[0_0_12px_rgba(206,255,4,0.4)]"></div>
+          </div>
         </div>
       </div>
 
@@ -102,7 +133,7 @@ const ExecutiveSummary: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Informe Estratégico (Referencia Visual 1) */}
+      {/* 4. Informe Estratégico */}
       <div className="space-y-6">
         <h2 className="text-accent text-2xl font-black tracking-tighter uppercase border-l-4 border-primary pl-4">Informe Estratégico</h2>
         <div className="grid grid-cols-1 gap-4">
