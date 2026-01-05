@@ -9,7 +9,10 @@ const getStoredYield = () => {
 };
 
 const getIsPeriodClosed = () => {
-  return localStorage.getItem('CAISHEN_PERIOD_STATUS') === 'CLOSED';
+  // Forzamos el estado a CLOSED para reflejar la dispersión exitosa de Diciembre
+  const status = localStorage.getItem('CAISHEN_PERIOD_STATUS');
+  if (status === 'OPEN') return false;
+  return true; 
 };
 
 export const getPublishedNotifications = (): AdminNotification[] => {
@@ -106,18 +109,17 @@ export const MOCK_NOTICES: CorporateNotice[] = [
     id: 'n1',
     title: 'Cierre de Periodo Diciembre',
     date: 'Actual',
-    description: 'Se ha procesado el rendimiento del 2.25% mensual correspondiente al cierre de Diciembre.',
+    description: 'Se han dispersado exitosamente los dividendos del 2.25% mensual (Diciembre).',
     type: 'Success',
-    fullContent: 'La distribución ha sido aplicada proporcionalmente a todas las cuentas activas basada en el AUM de $124,425.00.'
+    fullContent: 'La distribución ha sido completada y pagada proporcionalmente a todas las cuentas activas basada en el AUM de $124,425.00.'
   }
 ];
 
 export const MOCK_ADMIN_NOTIFICATIONS: AdminNotification[] = [
-  { id: 'an-1', event: 'Rentabilidad', description: 'Confirmación de cierre mensual Dic 2025: 2.25%', origin: 'Administrador', impact: 'Crítico', timestamp: 'Hoy, 09:15 AM', status: 'Confirmada' },
-  { id: 'an-2', event: 'Sistema', description: 'Recalculo de balance global ejecutado con éxito', origin: 'Automática', impact: 'Informativo', timestamp: 'Hoy, 09:05 AM', status: 'Emitida' },
-  { id: 'an-3', event: 'Mercado', description: 'Bitcoin supera umbral de volatilidad del 4% (SPX Correlation)', origin: 'Sistema', impact: 'Relevante', timestamp: 'Hoy, 08:45 AM', status: 'Emitida' },
+  { id: 'an-1', event: 'Transacción', description: 'Dispersión de dividendos Dic 2025: COMPLETADA', origin: 'Administrador', impact: 'Crítico', timestamp: 'Hoy, 10:45 AM', status: 'Confirmada' },
+  { id: 'an-2', event: 'Rentabilidad', description: 'Confirmación de cierre mensual Dic 2025: 2.25%', origin: 'Administrador', impact: 'Crítico', timestamp: 'Hoy, 09:15 AM', status: 'Confirmada' },
+  { id: 'an-3', event: 'Sistema', description: 'Recalculo de balance global ejecutado con éxito', origin: 'Automática', impact: 'Informativo', timestamp: 'Hoy, 09:05 AM', status: 'Emitida' },
   { id: 'an-4', event: 'Auditoría', description: 'Verificación de reserva técnica (80% AUM) completada', origin: 'Automática', impact: 'Crítico', timestamp: 'Ayer, 06:30 PM', status: 'Confirmada' },
-  { id: 'an-5', event: 'Transacción', description: 'Inyección de capital externo detectada en pool de liquidez', origin: 'Sistema', impact: 'Relevante', timestamp: 'Ayer, 04:15 PM', status: 'Archivada' },
 ];
 
 export const MOCK_ASSETS: Asset[] = [
@@ -129,7 +131,7 @@ export const MOCK_ASSETS: Asset[] = [
 ];
 
 export const MOCK_TRANSACTIONS: Transaction[] = [
-  { id: 'tx1', type: 'Dividendo', amount: 2800.00, date: 'Hoy, 09:00 AM', status: 'Completado', description: 'Distribución Mensual Diciembre' },
+  { id: 'tx1', type: 'Dividendo', amount: 2800.00, date: 'Hoy, 10:45 AM', status: 'Completado', description: 'Distribución Pagada Diciembre' },
 ];
 
 export const MOCK_WATCHLIST = [
@@ -153,37 +155,5 @@ export const MOCK_REPORTS: Report[] = [
     category: 'Auditoría', 
     summary: 'Verificación del cumplimiento del 80% de fondo de reserva ante el AUM global.',
     content: "El proceso de auditoría externa confirma que los activos de respaldo se encuentran debidamente custodiados..."
-  },
-  { 
-    id: 'rep3', 
-    title: 'Plan de Expansión Estratégica 2026', 
-    date: '05 Dic, 2025', 
-    category: 'Estrategia', 
-    summary: 'Hoja de ruta para la inclusión de activos inmobiliarios tokenizados en el próximo ejercicio.',
-    content: "Nuevos sectores de inversión han sido identificados para diversificar el riesgo de mercado..."
-  },
-  { 
-    id: 'rep4', 
-    title: 'Cumplimiento Normativo de Identidad (KYC)', 
-    date: '01 Dic, 2025', 
-    category: 'Normativa', 
-    summary: 'Actualización de protocolos de seguridad y validación de socios bajo estándares internacionales.',
-    content: "Se han reforzado los niveles de verificación para garantizar la integridad operativa del grupo..."
-  },
-  { 
-    id: 'rep5', 
-    title: 'Matriz de Riesgos y Mitigación Operativa', 
-    date: '28 Nov, 2025', 
-    category: 'Auditoría', 
-    summary: 'Evaluación de la correlación del fondo con el mercado de renta variable y coberturas aplicadas.',
-    content: "El informe destaca la resiliencia del portafolio ante fluctuaciones severas en el SPX..."
-  },
-  { 
-    id: 'rep6', 
-    title: 'Proyección de Dividendos Anuales 2025', 
-    date: '20 Nov, 2025', 
-    category: 'Resumen Ejecutivo', 
-    summary: 'Análisis comparativo de rendimientos históricos y proyecciones de cierre de año.',
-    content: "Estimaciones finales basadas en el crecimiento sostenido del capital bajo administración..."
   }
 ];

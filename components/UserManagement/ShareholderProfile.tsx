@@ -214,7 +214,7 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
                         month: 'Diciembre (Actual)', 
                         perf: `+2.25%`, 
                         util: `$${(finances.balance * 0.0225).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 
-                        status: FINANCE_CONFIG.IS_PERIOD_CLOSED ? 'Pagado' : 'Pendiente'
+                        status: 'Pagado'
                       },
                       { 
                         month: 'Noviembre', 
