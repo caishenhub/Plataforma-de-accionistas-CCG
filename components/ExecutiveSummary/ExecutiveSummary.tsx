@@ -24,10 +24,10 @@ import { CorporateNotice } from '../../types';
 const ExecutiveSummary: React.FC = () => {
   const [selectedNotice, setSelectedNotice] = useState<CorporateNotice | null>(null);
 
-  // Clase común para las tarjetas de KPI para garantizar simetría
-  const kpiCardClass = "bg-white p-8 rounded-[35px] border border-surface-border shadow-sm flex flex-col justify-between min-h-[200px] hover:shadow-premium transition-all duration-300 group";
+  // Clase común para las tarjetas de KPI para garantizar simetría absoluta
+  const kpiCardClass = "bg-white p-8 rounded-[35px] border border-surface-border shadow-sm flex flex-col h-[220px] hover:shadow-premium transition-all duration-300 group";
   const labelClass = "text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-tight";
-  const valueClass = "text-4xl font-black text-accent tracking-tighter mt-2";
+  const valueClass = "text-4xl font-black text-accent tracking-tighter";
 
   return (
     <div className="p-4 md:p-8 pb-24 space-y-10 animate-in fade-in duration-700">
@@ -42,16 +42,16 @@ const ExecutiveSummary: React.FC = () => {
         
         {/* Balance Total */}
         <div className={kpiCardClass}>
-          <div className="flex justify-between items-start w-full">
+          <div className="flex justify-between items-start">
             <span className={labelClass}>Balance Total<br/>(AUM)</span>
-            <div className="p-2 bg-primary/10 rounded-xl">
+            <div className="p-2.5 bg-primary/10 rounded-xl">
               <Wallet size={18} className="text-accent" />
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex items-center">
             <h3 className={valueClass}>$124.4k</h3>
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto pt-4 flex items-center h-8">
             <div className="bg-primary/20 text-accent text-[10px] font-black px-3 py-1.5 rounded-xl w-fit flex items-center gap-1 shadow-sm">
               <TrendingUp size={12} /> +39.8%
             </div>
@@ -60,16 +60,16 @@ const ExecutiveSummary: React.FC = () => {
 
         {/* Utilidad Proyectada */}
         <div className={kpiCardClass}>
-          <div className="flex justify-between items-start w-full">
+          <div className="flex justify-between items-start">
             <span className={labelClass}>Utilidad<br/>Proyectada</span>
-            <div className="p-2 bg-surface-subtle rounded-xl">
+            <div className="p-2.5 bg-surface-subtle rounded-xl">
               <LineChart size={18} className="text-text-muted" />
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex items-center">
             <h3 className={valueClass}>39.35%</h3>
           </div>
-          <div className="mt-auto w-full">
+          <div className="mt-auto pt-4 flex items-center h-8 w-full">
             <div className="h-4 w-full bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
               <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)] transition-all duration-1000" style={{ width: '85%' }}></div>
             </div>
@@ -78,35 +78,35 @@ const ExecutiveSummary: React.FC = () => {
 
         {/* Ajuste Controlado */}
         <div className={kpiCardClass}>
-          <div className="flex justify-between items-start w-full">
+          <div className="flex justify-between items-start">
             <span className={labelClass}>Ajuste<br/>Controlado</span>
-            <div className="p-2 bg-primary/10 rounded-xl">
+            <div className="p-2.5 bg-primary/10 rounded-xl">
               <ShieldCheck size={18} className="text-accent" />
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex items-center">
             <h3 className={valueClass}>3.2%</h3>
           </div>
-          <div className="mt-auto flex items-center justify-between w-full">
+          <div className="mt-auto pt-4 flex items-center justify-between h-8 w-full">
             <div className="bg-accent text-primary text-[10px] font-black px-4 py-1.5 rounded-xl uppercase tracking-widest shadow-md">
               Establecido
             </div>
-            <Info size={14} className="text-text-muted opacity-50" />
+            <Info size={14} className="text-text-muted opacity-40" />
           </div>
         </div>
 
         {/* Estabilidad Estructural */}
         <div className={kpiCardClass}>
-          <div className="flex justify-between items-start w-full">
+          <div className="flex justify-between items-start">
             <span className={labelClass}>Estabilidad<br/>Estructural</span>
-            <div className="p-2 bg-surface-subtle rounded-xl">
+            <div className="p-2.5 bg-surface-subtle rounded-xl">
               <Target size={18} className="text-text-muted" />
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex items-center">
             <h3 className={valueClass}>100%</h3>
           </div>
-          <div className="mt-auto w-full">
+          <div className="mt-auto pt-4 flex items-center h-8 w-full">
             <div className="h-1.5 bg-primary w-full rounded-full shadow-[0_0_12px_rgba(206,255,4,0.4)]"></div>
           </div>
         </div>

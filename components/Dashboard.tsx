@@ -28,12 +28,6 @@ const Dashboard: React.FC = () => {
           <h1 className="text-accent text-2xl md:text-4xl font-black tracking-tighter mb-1 uppercase">Panel de Control</h1>
           <p className="text-text-secondary text-[11px] md:text-base font-medium">Estado consolidado al {currentDate}.</p>
         </div>
-        {FINANCE_CONFIG.IS_PERIOD_CLOSED && (
-          <div className="bg-green-50 border border-green-200 px-4 py-2 rounded-2xl flex items-center gap-2 self-start md:self-auto">
-            <div className="size-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-[9px] font-black text-green-700 uppercase tracking-widest">Periodo Cerrado</span>
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
