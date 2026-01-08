@@ -15,20 +15,20 @@ import {
 
 const FAQS = [
   {
-    question: "¿Cuánto tiempo tardan los retiros en procesarse?",
-    answer: "Los retiros a cuentas bancarias nacionales generalmente se procesan en 24 horas hábiles. Para transferencias internacionales, puede tomar entre 2 a 5 días hábiles dependiendo de la entidad bancaria receptora."
+    question: "¿Qué es Caishen Capital Group?",
+    answer: "Caishen Capital Group S.A.S. es una compañía de inversión privada que estructura y administra estrategias de inversión mediante contratos privados, orientadas a la preservación y crecimiento del capital según el perfil de riesgo del inversionista.\n\nLa compañía opera bajo principios de gestión profesional del capital, diversificación de estrategias y activos, control y monitoreo del riesgo, y transparencia en la relación contractual."
   },
   {
-    question: "¿Cómo puedo cambiar mi contraseña?",
-    answer: "Puedes cambiar tu contraseña yendo a 'Configuración' en el menú lateral, seleccionando la pestaña 'Seguridad' y siguiendo los pasos para actualizar tus credenciales."
+    question: "¿Las inversiones tienen rentabilidad garantizada?",
+    answer: "No. Caishen Capital Group S.A.S. no ofrece rentabilidad garantizada. Toda inversión implica riesgo y está sujeta a variables de mercado como volatilidad, liquidez y condiciones macroeconómicas.\n\nEl rendimiento pasado no garantiza resultados futuros."
   },
   {
-    question: "¿Qué comisiones cobra Caishen Capital?",
-    answer: "Nuestras comisiones varían según el tipo de activo. Para acciones es 0.1%, criptomonedas 0.5% y ETFs 0.2%. Puedes ver el desglose completo en la sección de 'Reportes' > 'Comisiones'."
+    question: "¿Puedo retirar mi capital en cualquier momento?",
+    answer: "Sí. En Caishen Capital Group S.A.S., el inversionista puede retirar su capital en cualquier momento, conforme a lo establecido en su contrato de inversión.\n\nLas condiciones de retiro —procedimientos, plazos operativos y validaciones— están definidas contractualmente y buscan garantizar la seguridad y correcta ejecución de la operación."
   },
   {
-    question: "¿Es seguro mantener mi portafolio aquí?",
-    answer: "Absolutamente. Utilizamos encriptación de grado militar (AES-256) y autenticación de dos factores (2FA) para proteger todas las cuentas. Además, los fondos están asegurados hasta cierto límite."
+    question: "¿Cómo puedo obtener más información o soporte?",
+    answer: "Para obtener información adicional o soporte, el inversionista puede comunicarse con Caishen Capital Group S.A.S. a través de los canales oficiales de atención.\n\nSe recomienda utilizar únicamente los canales oficiales para garantizar confidencialidad, trazabilidad y seguridad de la información."
   }
 ];
 
@@ -107,8 +107,8 @@ const Support: React.FC = () => {
                       <ChevronDown size={20} />
                     </div>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-40 opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-                    <p className="text-text-secondary text-sm leading-relaxed pl-4 border-l-2 border-primary">
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-60 opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
+                    <p className="text-text-secondary text-sm leading-relaxed pl-4 border-l-2 border-primary whitespace-pre-wrap">
                       {faq.answer}
                     </p>
                   </div>
