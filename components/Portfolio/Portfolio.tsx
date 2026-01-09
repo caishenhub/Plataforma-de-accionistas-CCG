@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
-import { Building2, TrendingUp, Globe, PieChart as PieIcon, Activity, Bitcoin, Coins, Landmark, ShieldCheck } from 'lucide-react';
+import React from 'react';
+import { Building2, Globe, PieChart as PieIcon, Activity, Bitcoin, Coins, Landmark } from 'lucide-react';
 import AssetDonutChart from './AssetDonutChart';
 import { FINANCE_CONFIG } from '../../constants';
 
 const Portfolio: React.FC = () => {
-  const accumulatedYield2025 = 34.32;
+  // Actualización del rendimiento acumulado solicitado a 39.76%
+  const accumulatedYield2025 = 39.76;
 
   const ASSET_DATA = [
     { id: 1, name: 'Divisas (Forex)', category: 'Forex', participacion: '20.6%', valor: `$${(25631).toLocaleString('en-US')}`, retorno: '+12.5%', icon: Globe, color: 'bg-gray-100' },
