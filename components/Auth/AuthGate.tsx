@@ -74,12 +74,16 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isAuthenticated) return <>{children}</>;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#fcfcfc] flex items-center justify-center p-6 overflow-hidden">
-      {/* Background decoration */}
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-6 overflow-hidden bg-no-repeat bg-cover bg-center"
+      style={{ backgroundImage: "url('https://i.ibb.co/HL7RGf9F/Chat-GPT-Image-8-ene-2026-10-46-40-p-m.png')" }}
+    >
+      {/* Background decoration & overlay for legibility */}
+      <div className="absolute inset-0 bg-accent/20 backdrop-blur-[2px]" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full -ml-32 -mb-32 blur-3xl" />
 
-      <div className="relative w-full max-w-md bg-white rounded-[40px] shadow-premium border border-surface-border p-10 space-y-10 animate-in fade-in zoom-in-95 duration-700">
+      <div className="relative w-full max-w-md bg-white/95 backdrop-blur-xl rounded-[40px] shadow-premium border border-white/20 p-10 space-y-10 animate-in fade-in zoom-in-95 duration-700">
         <div className="flex flex-col items-center text-center space-y-6">
           <img 
             src="https://i.ibb.co/zT3RhhT9/CAISHEN-NO-FONDO-AZUL-1.png" 
