@@ -9,7 +9,8 @@ import {
   Headset, 
   ChevronRight,
   X,
-  Users
+  Users,
+  LogOut
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,6 +21,10 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+
+  const handleExit = () => {
+    window.location.assign("https://www.caishencapital.co");
+  };
 
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -86,6 +91,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <span className="text-accent/70 text-xs font-bold mt-0.5">Contactar soporte</span>
           </div>
         </Link>
+
+        {/* Botón de Salir (Acción de cierre) */}
+        <button 
+          onClick={handleExit}
+          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-text-secondary hover:bg-red-50 hover:text-red-600 transition-all duration-300 group outline-none"
+        >
+          <LogOut className="size-5 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-bold tracking-tight">Salir</span>
+        </button>
       </div>
     </aside>
   );
