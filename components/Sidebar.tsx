@@ -23,6 +23,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const isActive = (path: string) => location.pathname === path;
 
   const handleExit = () => {
+    // 1. Eliminar únicamente la clave de sesión para revocar el acceso
+    localStorage.removeItem('ccg_session');
+    
+    // 2. Redirigir de forma externa y absoluta a la web corporativa
     window.location.assign("https://www.caishencapital.co");
   };
 
