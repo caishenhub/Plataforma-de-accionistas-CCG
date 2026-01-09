@@ -13,7 +13,10 @@ import {
   Activity,
   Wallet,
   Target,
-  Info
+  Info,
+  ChevronDown,
+  X,
+  Check
 } from 'lucide-react';
 import EvolutionChart from './EvolutionChart';
 import AssetDistributionDonut from './AssetDistributionDonut';
@@ -21,11 +24,45 @@ import { MOCK_NOTICES } from '../../constants';
 import NoticeModal from './NoticeModal';
 import { CorporateNotice } from '../../types';
 
+interface KpiDetail {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
 const ExecutiveSummary: React.FC = () => {
   const [selectedNotice, setSelectedNotice] = useState<CorporateNotice | null>(null);
+  const [activeDetail, setActiveDetail] = useState<KpiDetail | null>(null);
 
-  // Clase común para las tarjetas de KPI para garantizar simetría absoluta
-  const kpiCardClass = "bg-white p-8 rounded-[35px] border border-surface-border shadow-sm flex flex-col h-[220px] hover:shadow-premium transition-all duration-300 group";
+  const KPI_DETAILS: Record<string, KpiDetail> = {
+    balance: {
+      id: 'balance',
+      title: 'Balance Total (AUM)',
+      description: 'Representa el capital total registrado en el sistema según el periodo actual, consolidando el estado general de la cuenta del accionista conforme a los registros internos. Corresponde al valor de los activos bajo gestión dentro del modelo operativo de Caishen Capital Group, reflejando el capital administrado y su exposición vigente según la estructura definida.',
+      icon: <Wallet size={24} className="text-accent" />
+    },
+    utilidad: {
+      id: 'utilidad',
+      title: 'Utilidad Proyectada',
+      description: 'Estimación de utilidad basada en el rendimiento del periodo y en los parámetros actuales del modelo. Es un valor proyectado y puede variar según el comportamiento del mercado y los ajustes operativos.',
+      icon: <LineChart size={24} className="text-accent" />
+    },
+    ajuste: {
+      id: 'ajuste',
+      title: 'Ajuste Controlado',
+      description: 'Indica la aplicación de controles de riesgo y ajustes operativos destinados a mantener la exposición dentro de límites definidos, buscando estabilidad y protección del capital.',
+      icon: <ShieldCheck size={24} className="text-accent" />
+    },
+    estabilidad: {
+      id: 'estabilidad',
+      title: 'Estabilidad Estructural',
+      description: 'Métrica cualitativa/indicativa del nivel de consistencia del modelo durante el periodo, considerando continuidad operativa, control de riesgo y cumplimiento de la estructura de gestión establecida.',
+      icon: <Target size={24} className="text-accent" />
+    }
+  };
+
+  const kpiCardClass = "bg-white p-8 rounded-[35px] border border-surface-border shadow-sm flex flex-col h-[220px] transition-all duration-300 group cursor-pointer relative overflow-hidden hover:shadow-premium hover:-translate-y-1";
   const labelClass = "text-[10px] font-black text-text-muted uppercase tracking-[0.15em] leading-tight";
   const valueClass = "text-4xl font-black text-accent tracking-tighter";
 
@@ -37,80 +74,116 @@ const ExecutiveSummary: React.FC = () => {
         <h1 className="text-accent text-3xl font-black tracking-tighter uppercase">Resumen consolidado del panorama financiero hoy</h1>
       </div>
 
-      {/* 2. Grid de KPIs Simétricos */}
+      {/* 2. Grid de KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Balance Total */}
-        <div className={kpiCardClass}>
+        <div onClick={() => setActiveDetail(KPI_DETAILS.balance)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
-            <span className={labelClass}>Balance Total<br/>(AUM)</span>
+            <span className={labelClass}>Balance Total /<br/>AUM</span>
             <div className="p-2.5 bg-primary/10 rounded-xl">
               <Wallet size={18} className="text-accent" />
             </div>
           </div>
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center py-4">
             <h3 className={valueClass}>$124.4k</h3>
           </div>
-          <div className="mt-auto pt-4 flex items-center h-8">
+          <div className="mt-auto pt-2 flex items-center justify-between h-8">
             <div className="bg-primary/20 text-accent text-[10px] font-black px-3 py-1.5 rounded-xl w-fit flex items-center gap-1 shadow-sm">
               <TrendingUp size={12} /> +39.8%
             </div>
+            <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
 
         {/* Utilidad Proyectada */}
-        <div className={kpiCardClass}>
+        <div onClick={() => setActiveDetail(KPI_DETAILS.utilidad)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
             <span className={labelClass}>Utilidad<br/>Proyectada</span>
             <div className="p-2.5 bg-surface-subtle rounded-xl">
               <LineChart size={18} className="text-text-muted" />
             </div>
           </div>
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center py-4">
             <h3 className={valueClass}>39.35%</h3>
           </div>
-          <div className="mt-auto pt-4 flex items-center h-8 w-full">
-            <div className="h-4 w-full bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
+          <div className="mt-auto pt-2 flex items-center justify-between h-8 w-full gap-4">
+            <div className="h-4 flex-1 bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
               <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)] transition-all duration-1000" style={{ width: '85%' }}></div>
             </div>
+            <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
 
         {/* Ajuste Controlado */}
-        <div className={kpiCardClass}>
+        <div onClick={() => setActiveDetail(KPI_DETAILS.ajuste)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
             <span className={labelClass}>Ajuste<br/>Controlado</span>
             <div className="p-2.5 bg-primary/10 rounded-xl">
               <ShieldCheck size={18} className="text-accent" />
             </div>
           </div>
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center py-4">
             <h3 className={valueClass}>3.2%</h3>
           </div>
-          <div className="mt-auto pt-4 flex items-center justify-between h-8 w-full">
+          <div className="mt-auto pt-2 flex items-center justify-between h-8 w-full">
             <div className="bg-accent text-primary text-[10px] font-black px-4 py-1.5 rounded-xl uppercase tracking-widest shadow-md">
               Establecido
             </div>
-            <Info size={14} className="text-text-muted opacity-40" />
+            <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
 
         {/* Estabilidad Estructural */}
-        <div className={kpiCardClass}>
+        <div onClick={() => setActiveDetail(KPI_DETAILS.estabilidad)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
             <span className={labelClass}>Estabilidad<br/>Estructural</span>
             <div className="p-2.5 bg-surface-subtle rounded-xl">
               <Target size={18} className="text-text-muted" />
             </div>
           </div>
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center py-4">
             <h3 className={valueClass}>100%</h3>
           </div>
-          <div className="mt-auto pt-4 flex items-center h-8 w-full">
-            <div className="h-1.5 bg-primary w-full rounded-full shadow-[0_0_12px_rgba(206,255,4,0.4)]"></div>
+          <div className="mt-auto pt-2 flex items-center justify-between h-8 w-full gap-4">
+            <div className="h-1.5 bg-primary flex-1 rounded-full shadow-[0_0_12px_rgba(206,255,4,0.4)]"></div>
+            <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
       </div>
+
+      {/* KPI DETAIL MODAL */}
+      {activeDetail && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-accent/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setActiveDetail(null)} />
+          <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-10 space-y-8">
+              <div className="flex justify-between items-start">
+                <div className="size-16 bg-primary/20 rounded-[20px] flex items-center justify-center">
+                  {activeDetail.icon}
+                </div>
+                <button onClick={() => setActiveDetail(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                  <X size={24} className="text-text-muted" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-black text-accent tracking-tighter uppercase">{activeDetail.title}</h3>
+                <div className="h-1 w-12 bg-primary rounded-full"></div>
+                <p className="text-text-secondary text-sm leading-relaxed font-medium">
+                  {activeDetail.description}
+                </p>
+              </div>
+              <button 
+                onClick={() => setActiveDetail(null)}
+                className="w-full bg-accent text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-accent/90 transition-all uppercase text-xs tracking-widest shadow-xl"
+              >
+                <Check size={18} className="text-primary" />
+                <span>Entendido</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. Gráficos Centrales */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -153,7 +226,7 @@ const ExecutiveSummary: React.FC = () => {
           ))}
         </div>
 
-        {/* Proyección Estratégica (Banner Oscuro) */}
+        {/* Proyección Estratégica */}
         <div className="bg-accent rounded-[32px] p-8 text-white relative overflow-hidden group border border-primary/10">
           <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
             <Flag size={120} />
@@ -172,7 +245,7 @@ const ExecutiveSummary: React.FC = () => {
         </div>
       </div>
 
-      {/* 5. Sección Inferior: Avisos y Actividad */}
+      {/* 5. Avisos y Actividad */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-rose-50/30 rounded-[32px] p-8 border border-rose-100/50 space-y-6">
           <div className="flex items-center gap-2">

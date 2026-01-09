@@ -1,9 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Lock, ShieldCheck, AlertCircle, X, ChevronRight, Fingerprint } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle, X, ChevronRight } from 'lucide-react';
 
-// Importamos la lista de usuarios para validación (Fuente de verdad)
-// Nota: En un entorno real, esto se validaría vía API.
 const MOCK_USERS = [
   { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', pin: '8888' },
   { id: 'usr-220', uid: '#USR-220', name: 'Isabella Beron Garcia', email: 'i.beron@inversion.com', pin: '4927' },
@@ -62,6 +60,8 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }));
       setIsAuthenticated(true);
       setShowPinModal(false);
+      // Forzar redirección al panel de control (Dashboard) al iniciar sesión
+      window.location.hash = '/';
     } else {
       setError('Credenciales de acceso inválidas');
       setPin('');
@@ -78,10 +78,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       className="fixed inset-0 z-[9999] flex items-center justify-center p-6 overflow-hidden bg-no-repeat bg-cover bg-center"
       style={{ backgroundImage: "url('https://i.ibb.co/HL7RGf9F/Chat-GPT-Image-8-ene-2026-10-46-40-p-m.png')" }}
     >
-      {/* Overlay for legibility */}
       <div className="absolute inset-0 bg-accent/40" />
-
-      {/* Solid White Login Container (Transparency removed) */}
       <div className="relative w-full max-w-md bg-white rounded-[40px] shadow-premium border border-white/20 p-10 space-y-10 animate-in fade-in zoom-in-95 duration-700">
         <div className="flex flex-col items-center text-center space-y-6">
           <img 
@@ -108,7 +105,6 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               />
             </div>
           </div>
-
           <button 
             type="submit"
             className="w-full bg-accent text-primary font-black py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-accent/90 transition-all shadow-xl hover:-translate-y-1 active:scale-95 uppercase text-xs tracking-[0.2em]"
@@ -117,14 +113,12 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ChevronRight size={18} />
           </button>
         </form>
-
         <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-text-muted uppercase tracking-widest">
           <ShieldCheck size={14} className="text-primary" />
           Conexión Encriptada de 256-bits
         </div>
       </div>
 
-      {/* PIN MODAL */}
       {showPinModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-accent/60 animate-in fade-in duration-300" onClick={() => setShowPinModal(false)} />
@@ -137,8 +131,6 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <h3 className="text-xl font-black text-accent tracking-tighter uppercase">Ingrese su PIN</h3>
                 <p className="text-xs text-text-secondary font-medium px-4">Código único para <span className="text-accent font-bold">{identifier}</span></p>
               </div>
-
-              {/* PIN Display */}
               <div className="flex justify-center gap-3">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className={`size-12 rounded-xl border-2 flex items-center justify-center transition-all ${
@@ -148,8 +140,6 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   </div>
                 ))}
               </div>
-
-              {/* Virtual Keypad */}
               <div className="grid grid-cols-3 gap-3">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                   <button 
@@ -182,14 +172,12 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   OK
                 </button>
               </div>
-
               {error && (
                 <div className="flex items-center justify-center gap-1.5 text-[11px] font-black text-red-600 uppercase tracking-widest">
                   <AlertCircle size={14} />
                   <span>{error}</span>
                 </div>
               )}
-
               <button 
                 onClick={() => setShowPinModal(false)}
                 className="text-[10px] font-black text-text-muted hover:text-accent uppercase tracking-widest transition-colors"
