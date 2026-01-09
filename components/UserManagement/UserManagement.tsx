@@ -12,31 +12,30 @@ import {
 } from 'lucide-react';
 import ShareholderProfile from './ShareholderProfile';
 
+// MOCK_USERS con PIN único reasignado por seguridad (sin números consecutivos)
 const MOCK_USERS = [
-  { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', role: 'Super Admin', status: 'Activo', initials: 'CCG', color: 'bg-accent text-primary', shares: 300 },
-  { id: 'usr-220', uid: '#USR-220', name: 'Isabella Beron Garcia', email: 'i.beron@inversion.com', role: 'Accionista Preferente', status: 'Activo', initials: 'IB', color: 'bg-pink-100 text-pink-700', shares: 100 },
-  { id: 'usr-008', uid: '#USR-008', name: 'Juan Andres Suarez Zuluaga', email: 'j.suarez@caishencapital.com', role: 'Accionista', status: 'Activo', initials: 'JS', color: 'bg-blue-100 text-blue-700', shares: 20 },
-  { id: 'usr-202', uid: '#USR-202', name: 'María Fernanda Ríos', email: 'm.rios@finanzas.net', role: 'Accionista', status: 'Activo', initials: 'MR', color: 'bg-purple-100 text-purple-700', shares: 5 },
-  { id: 'usr-203', uid: '#USR-203', name: 'Santiago Herrera', email: 's.herrera@partners.com', role: 'Accionista', status: 'Activo', initials: 'SH', color: 'bg-green-100 text-green-700', shares: 5 },
-  { id: 'usr-204', uid: '#USR-204', name: 'Valentina Pardo', email: 'v.pardo@capital.io', role: 'Accionista', status: 'Activo', initials: 'VP', color: 'bg-orange-100 text-orange-700', shares: 5 },
-  { id: 'usr-205', uid: '#USR-205', name: 'Camilo Ortega', email: 'c.ortega@wealth.com', role: 'Accionista', status: 'Activo', initials: 'CO', color: 'bg-pink-100 text-pink-700', shares: 5 },
-  { id: 'usr-206', uid: '#USR-206', name: 'Daniela Cárdenas', email: 'd.cardenas@growth.com', role: 'Accionista', status: 'Activo', initials: 'DC', color: 'bg-teal-100 text-teal-700', shares: 5 },
-  { id: 'usr-207', uid: '#USR-207', name: 'Nicolás Vega', email: 'n.vega@invest.net', role: 'Accionista', status: 'Activo', initials: 'NV', color: 'bg-yellow-100 text-yellow-700', shares: 5 },
-  { id: 'usr-208', uid: '#USR-208', name: 'Laura Sofía Medina', email: 'l.medina@portfolio.com', role: 'Accionista', status: 'Activo', initials: 'LM', color: 'bg-indigo-100 text-indigo-700', shares: 5 },
-  { id: 'usr-209', uid: '#USR-209', name: 'Andrés Felipe Salazar', email: 'a.salazar@equity.com', role: 'Accionista', status: 'Activo', initials: 'AS', color: 'bg-rose-100 text-rose-700', shares: 5 },
-  { id: 'usr-210', uid: '#USR-210', name: 'Catalina Gómez', email: 'c.gomez@legacy.com', role: 'Accionista', status: 'Activo', initials: 'CG', color: 'bg-slate-100 text-slate-700', shares: 5 },
-  { id: 'usr-211', uid: '#USR-211', name: 'Felipe Restrepo', email: 'f.restrepo@global.com', role: 'Accionista', status: 'Activo', initials: 'FR', color: 'bg-cyan-100 text-cyan-700', shares: 5 },
-  { id: 'usr-212', uid: '#USR-212', name: 'Paula Andrea Torres', email: 'p.torres@asset.com', role: 'Accionista', status: 'Activo', initials: 'PT', color: 'bg-lime-100 text-lime-700', shares: 4 },
-  { id: 'usr-213', uid: '#USR-213', name: 'Sebastián Quintero', email: 's.quintero@capital.io', role: 'Accionista', status: 'Activo', initials: 'SQ', color: 'bg-emerald-100 text-emerald-700', shares: 4 },
-  { id: 'usr-214', uid: '#USR-214', name: 'Juliana Castro', email: 'j.castro@inversion.net', role: 'Accionista', status: 'Activo', initials: 'JC', color: 'bg-violet-100 text-violet-700', shares: 4 },
-  { id: 'usr-215', uid: '#USR-215', name: 'Mateo Arboleda', email: 'm.arboleda@funds.com', role: 'Accionista', status: 'Activo', initials: 'MA', color: 'bg-fuchsia-100 text-fuchsia-700', shares: 4 },
-  { id: 'usr-216', uid: '#USR-216', name: 'Manuela Jiménez', email: 'm.jimenez@wealth.net', role: 'Accionista', status: 'Activo', initials: 'MJ', color: 'bg-sky-100 text-sky-700', shares: 4 },
-  { id: 'usr-217', uid: '#USR-217', name: 'Tomás Aguirre', email: 't.aguirre@invest.io', role: 'Accionista', status: 'Activo', initials: 'TA', color: 'bg-amber-100 text-amber-700', shares: 4 },
-  { id: 'usr-218', uid: '#USR-218', name: 'Carolina Muñoz', email: 'c.munoz@partner.com', role: 'Accionista', status: 'Activo', initials: 'CM', color: 'bg-red-100 text-red-700', shares: 3 },
-  { id: 'usr-219', uid: '#USR-219', name: 'Esteban Ramírez', email: 'e.ramirez@growth.io', role: 'Accionista', status: 'Activo', initials: 'ER', color: 'bg-gray-200 text-gray-700', shares: 3 },
+  { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', role: 'Super Admin', status: 'Activo', initials: 'CCG', color: 'bg-accent text-primary', shares: 300, pin: '8888' },
+  { id: 'usr-220', uid: '#USR-220', name: 'Isabella Beron Garcia', email: 'i.beron@inversion.com', role: 'Accionista Preferente', status: 'Activo', initials: 'IB', color: 'bg-pink-100 text-pink-700', shares: 100, pin: '4927' },
+  { id: 'usr-008', uid: '#USR-008', name: 'Juan Andres Suarez Zuluaga', email: 'j.suarez@caishencapital.com', role: 'Accionista', status: 'Activo', initials: 'JS', color: 'bg-blue-100 text-blue-700', shares: 20, pin: '3159' },
+  { id: 'usr-202', uid: '#USR-202', name: 'María Fernanda Ríos', email: 'm.rios@finanzas.net', role: 'Accionista', status: 'Activo', initials: 'MR', color: 'bg-purple-100 text-purple-700', shares: 5, pin: '6284' },
+  { id: 'usr-203', uid: '#USR-203', name: 'Santiago Herrera', email: 's.herrera@partners.com', role: 'Accionista', status: 'Activo', initials: 'SH', color: 'bg-green-100 text-green-700', shares: 5, pin: '1735' },
+  { id: 'usr-204', uid: '#USR-204', name: 'Valentina Pardo', email: 'v.pardo@capital.io', role: 'Accionista', status: 'Activo', initials: 'VP', color: 'bg-orange-100 text-orange-700', shares: 5, pin: '5942' },
+  { id: 'usr-205', uid: '#USR-205', name: 'Camilo Ortega', email: 'c.ortega@wealth.com', role: 'Accionista', status: 'Activo', initials: 'CO', color: 'bg-pink-100 text-pink-700', shares: 5, pin: '8316' },
+  { id: 'usr-206', uid: '#USR-206', name: 'Daniela Cárdenas', email: 'd.cardenas@growth.com', role: 'Accionista', status: 'Activo', initials: 'DC', color: 'bg-teal-100 text-teal-700', shares: 5, pin: '2691' },
+  { id: 'usr-207', uid: '#USR-207', name: 'Nicolás Vega', email: 'n.vega@invest.net', role: 'Accionista', status: 'Activo', initials: 'NV', color: 'bg-yellow-100 text-yellow-700', shares: 5, pin: '4073' },
+  { id: 'usr-208', uid: '#USR-208', name: 'Laura Sofía Medina', email: 'l.medina@portfolio.com', role: 'Accionista', status: 'Activo', initials: 'LM', color: 'bg-indigo-100 text-indigo-700', shares: 5, pin: '9514' },
+  { id: 'usr-209', uid: '#USR-209', name: 'Andrés Felipe Salazar', email: 'a.salazar@equity.com', role: 'Accionista', status: 'Activo', initials: 'AS', color: 'bg-rose-100 text-rose-700', shares: 5, pin: '3826' },
+  { id: 'usr-210', uid: '#USR-210', name: 'Catalina Gómez', email: 'c.gomez@legacy.com', role: 'Accionista', status: 'Activo', initials: 'CG', color: 'bg-slate-100 text-slate-700', shares: 5, pin: '7149' },
+  { id: 'usr-211', uid: '#USR-211', name: 'Felipe Restrepo', email: 'f.restrepo@global.com', role: 'Accionista', status: 'Activo', initials: 'FR', color: 'bg-cyan-100 text-cyan-700', shares: 5, pin: '5382' },
+  { id: 'usr-212', uid: '#USR-212', name: 'Paula Andrea Torres', email: 'p.torres@asset.com', role: 'Accionista', status: 'Activo', initials: 'PT', color: 'bg-lime-100 text-lime-700', shares: 4, pin: '1964' },
+  { id: 'usr-213', uid: '#USR-213', name: 'Sebastián Quintero', email: 's.quintero@capital.io', role: 'Accionista', status: 'Activo', initials: 'SQ', color: 'bg-emerald-100 text-emerald-700', shares: 4, pin: '4271' },
+  { id: 'usr-214', uid: '#USR-214', name: 'Juliana Castro', email: 'j.castro@inversion.net', role: 'Accionista', status: 'Activo', initials: 'JC', color: 'bg-violet-100 text-violet-700', shares: 4, pin: '6835' },
+  { id: 'usr-215', uid: '#USR-215', name: 'Mateo Arboleda', email: 'm.arboleda@funds.com', role: 'Accionista', status: 'Activo', initials: 'MA', color: 'bg-fuchsia-100 text-fuchsia-700', shares: 4, pin: '9157' },
+  { id: 'usr-216', uid: '#USR-216', name: 'Manuela Jiménez', email: 'm.jimenez@wealth.net', role: 'Accionista', status: 'Activo', initials: 'MJ', color: 'bg-sky-100 text-sky-700', shares: 4, pin: '2408' },
+  { id: 'usr-217', uid: '#USR-217', name: 'Tomás Aguirre', email: 't.aguirre@invest.io', role: 'Accionista', status: 'Activo', initials: 'TA', color: 'bg-amber-100 text-amber-700', shares: 4, pin: '5723' },
+  { id: 'usr-218', uid: '#USR-218', name: 'Carolina Muñoz', email: 'c.munoz@partner.com', role: 'Accionista', status: 'Activo', initials: 'CM', color: 'bg-red-100 text-red-700', shares: 3, pin: '8041' },
+  { id: 'usr-219', uid: '#USR-219', name: 'Esteban Ramírez', email: 'e.ramirez@growth.io', role: 'Accionista', status: 'Activo', initials: 'ER', color: 'bg-gray-200 text-gray-700', shares: 3, pin: '3596' },
 ];
-
-const MASTER_PIN = "8822"; 
 
 const UserManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +47,6 @@ const UserManagement: React.FC = () => {
   const [error, setError] = useState(false);
 
   const filteredUsers = useMemo(() => {
-    // 1. Filtrar primero por búsqueda y status
     const basicFiltered = MOCK_USERS.filter(user => {
       const matchesSearch = 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -64,7 +62,6 @@ const UserManagement: React.FC = () => {
       return matchesSearch && matchesStatus;
     });
 
-    // 2. Ordenar: Admin (admin-01) siempre arriba, el resto A-Z
     return basicFiltered.sort((a, b) => {
       if (a.id === 'admin-01') return -1;
       if (b.id === 'admin-01') return 1;
@@ -81,7 +78,7 @@ const UserManagement: React.FC = () => {
 
   const handleVerifyPin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (pin === MASTER_PIN) {
+    if (pendingUser && pin === pendingUser.pin) {
       setSelectedUser(pendingUser);
       setIsVerifying(false);
       setPendingUser(null);
@@ -203,7 +200,7 @@ const UserManagement: React.FC = () => {
               <div className="space-y-3">
                 <h3 className="text-2xl font-black text-accent tracking-tighter uppercase">Verificación de Identidad</h3>
                 <p className="text-xs text-text-secondary font-medium px-4 leading-relaxed">
-                  Confirma tu identidad como <span className="font-bold text-accent">Administrador Maestro</span> para acceder al perfil de <span className="font-bold text-accent">{pendingUser?.name}</span>.
+                  Confirma la credencial única de acceso asignada a <span className="font-bold text-accent">{pendingUser?.name}</span>.
                 </p>
               </div>
               <form onSubmit={handleVerifyPin} className="space-y-6">
@@ -222,7 +219,7 @@ const UserManagement: React.FC = () => {
                   {error && (
                     <div className="absolute -bottom-8 left-0 right-0 flex items-center justify-center gap-1.5 text-[11px] font-black text-red-600 uppercase tracking-widest animate-in slide-in-from-top-1">
                       <AlertCircle size={14} />
-                      <span>PIN Incorrecto</span>
+                      <span>PIN Incorrecto para este Usuario</span>
                     </div>
                   )}
                 </div>

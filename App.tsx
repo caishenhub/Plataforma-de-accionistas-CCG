@@ -10,6 +10,7 @@ import Reports from './components/Reports/Reports';
 import Support from './components/Support/Support';
 import UserManagement from './components/UserManagement/UserManagement';
 import FinancialControl from './components/Admin/FinancialControl';
+import AuthGate from './components/Auth/AuthGate'; // Gating de seguridad
 import { supabase } from './lib/supabase';
 import { Cloud, CloudOff } from 'lucide-react';
 
@@ -86,16 +87,18 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
 const App: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout title="Panel de Control"><Dashboard /></Layout>} />
-        <Route path="/users" element={<Layout title="Gestión de Accionistas"><UserManagement /></Layout>} />
-        <Route path="/portfolio" element={<Layout title="Mi Portafolio"><Portfolio /></Layout>} />
-        <Route path="/summary" element={<Layout title="Resumen Ejecutivo"><ExecutiveSummary /></Layout>} />
-        <Route path="/reports" element={<Layout title="Reportes Administrativos"><Reports /></Layout>} />
-        <Route path="/support" element={<Layout title="Soporte y Ayuda"><Support /></Layout>} />
-        <Route path="/admin/finance" element={<Layout title="Control Financiero"><FinancialControl /></Layout>} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AuthGate>
+        <Routes>
+          <Route path="/" element={<Layout title="Panel de Control"><Dashboard /></Layout>} />
+          <Route path="/users" element={<Layout title="Gestión de Accionistas"><UserManagement /></Layout>} />
+          <Route path="/portfolio" element={<Layout title="Mi Portafolio"><Portfolio /></Layout>} />
+          <Route path="/summary" element={<Layout title="Resumen Ejecutivo"><ExecutiveSummary /></Layout>} />
+          <Route path="/reports" element={<Layout title="Reportes Administrativos"><Reports /></Layout>} />
+          <Route path="/support" element={<Layout title="Soporte y Ayuda"><Support /></Layout>} />
+          <Route path="/admin/finance" element={<Layout title="Control Financiero"><FinancialControl /></Layout>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthGate>
     </Router>
   );
 };
