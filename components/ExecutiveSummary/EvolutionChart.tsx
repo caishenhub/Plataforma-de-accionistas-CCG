@@ -11,7 +11,6 @@ const MONTH_NAMES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SE
 
 const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
   
-  // Calcular el cierre de 2025 para usar como base en 2026
   const base2026 = useMemo(() => {
     const yields2025 = FINANCIAL_HISTORY[2025] || [];
     let closingValue = 100;
@@ -22,18 +21,13 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
   }, []);
 
   const chartData = useMemo(() => {
-    // Si es 2026, usamos la base del cierre de 2025. Si no, base 100.
     const isYear2026 = year === 2026;
     let cumulativeValue = isYear2026 ? base2026 : 100;
     
     const data = [];
     
     for (let i = 0; i < 12; i++) {
-      // Intentar obtener rendimiento del storage (admin) o del historial estático
       const y = getStoredYield(year, i);
-      
-      // Para 2026, solo graficamos meses que tengan datos suministrados (distintos de 0 
-      // o explícitamente guardados en localStorage)
       const hasData = isYear2026 ? (y !== 0 || localStorage.getItem(`YIELD_${year}_${i}`) !== null) : true;
       
       if (hasData) {

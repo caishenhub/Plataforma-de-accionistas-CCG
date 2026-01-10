@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TrendingUp, LucideIcon } from 'lucide-react';
+import { TrendingUp, TrendingDown, LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
@@ -10,9 +10,10 @@ interface StatCardProps {
   icon: LucideIcon;
   variant?: 'light' | 'dark' | 'neon';
   progress?: number;
+  isNegative?: boolean;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeLabel, icon: Icon, variant = 'light', progress }) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeLabel, icon: Icon, variant = 'light', progress, isNegative }) => {
   const containerClasses = {
     light: 'bg-white border-surface-border text-accent',
     dark: 'bg-accent border-accent text-white',
@@ -24,6 +25,10 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeLabel, 
     dark: 'text-white opacity-5',
     neon: 'text-accent opacity-10'
   };
+
+  const badgeClasses = isNegative 
+    ? 'bg-red-100 text-red-600' 
+    : (variant === 'neon' ? 'bg-accent text-primary' : 'bg-primary text-accent');
 
   return (
     <div className={`rounded-3xl p-7 border relative overflow-hidden group shadow-sm transition-all duration-300 hover:shadow-premium hover:-translate-y-1 ${containerClasses[variant]}`}>
@@ -55,10 +60,8 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeLabel, 
           ) : (
             <div className="flex items-center gap-3">
               {change && (
-                <span className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-extrabold shadow-sm ${
-                  variant === 'neon' ? 'bg-accent text-primary' : 'bg-primary text-accent'
-                }`}>
-                  <TrendingUp size={12} />
+                <span className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-extrabold shadow-sm ${badgeClasses}`}>
+                  {isNegative ? <TrendingDown size={12} /> : <TrendingUp size={12} />}
                   {change}
                 </span>
               )}

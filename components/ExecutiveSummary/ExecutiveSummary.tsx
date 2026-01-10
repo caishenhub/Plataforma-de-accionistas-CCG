@@ -28,7 +28,7 @@ interface KpiDetail {
   id: string;
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: React.Node;
 }
 
 const ExecutiveSummary: React.FC = () => {
@@ -44,8 +44,8 @@ const ExecutiveSummary: React.FC = () => {
     },
     utilidad: {
       id: 'utilidad',
-      title: 'Utilidad Proyectada',
-      description: 'Estimación de utilidad basada en el rendimiento del periodo y en los parámetros actuales del modelo. Es un valor proyectado y puede variar según el comportamiento del mercado y los ajustes operativos.',
+      title: 'Utilidad Anual 2025',
+      description: 'Rendimiento consolidado del año 2025 mediante interés compuesto mensual, alcanzando un objetivo estratégico del 39.76%. Este valor refleja la eficiencia operativa del portafolio durante el ejercicio.',
       icon: <LineChart size={24} className="text-accent" />
     },
     ajuste: {
@@ -90,7 +90,7 @@ const ExecutiveSummary: React.FC = () => {
           </div>
           <div className="mt-auto pt-2 flex items-center justify-between h-8">
             <div className="bg-primary/20 text-accent text-[10px] font-black px-3 py-1.5 rounded-xl w-fit flex items-center gap-1 shadow-sm">
-              <TrendingUp size={12} /> +39.8%
+              <TrendingUp size={12} /> +39.76%
             </div>
             <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -99,17 +99,17 @@ const ExecutiveSummary: React.FC = () => {
         {/* Utilidad Proyectada */}
         <div onClick={() => setActiveDetail(KPI_DETAILS.utilidad)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
-            <span className={labelClass}>Utilidad<br/>Proyectada</span>
+            <span className={labelClass}>Utilidad<br/>Anual 2025</span>
             <div className="p-2.5 bg-surface-subtle rounded-xl">
               <LineChart size={18} className="text-text-muted" />
             </div>
           </div>
           <div className="flex-1 flex items-center py-4">
-            <h3 className={valueClass}>39.35%</h3>
+            <h3 className={valueClass}>39.76%</h3>
           </div>
           <div className="mt-auto pt-2 flex items-center justify-between h-8 w-full gap-4">
             <div className="h-4 flex-1 bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
-              <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)] transition-all duration-1000" style={{ width: '85%' }}></div>
+              <div className="h-full bg-primary rounded-full shadow-[0_0_8px_rgba(206,255,4,0.5)] transition-all duration-1000" style={{ width: '100%' }}></div>
             </div>
             <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -211,7 +211,7 @@ const ExecutiveSummary: React.FC = () => {
         <h2 className="text-accent text-2xl font-black tracking-tighter uppercase border-l-4 border-primary pl-4">Informe Estratégico</h2>
         <div className="grid grid-cols-1 gap-4">
           {[
-            { icon: LineChart, color: 'bg-green-50 text-green-500', title: 'Evolución del Portafolio – Lectura General', content: 'Durante el periodo reciente, el portafolio ha mostrado una evolución consistente, con fases de crecimiento progresivo acompañadas de ajustes controlados propios del entorno de mercado.' },
+            { icon: LineChart, color: 'bg-green-50 text-green-500', title: 'Evolución del Portafolio – Lectura General', content: 'Durante el periodo reciente, el portafolio ha mostrado una evolución consistente, alcanzando un hito del 39.76% anual en 2025.' },
             { icon: Settings2, color: 'bg-yellow-50 text-yellow-500', title: 'Estado Operativo del Portafolio', content: 'El portafolio se encuentra actualmente en una fase de estabilidad operativa, con una estructura diversificada y mecanismos de protección activos.' },
             { icon: Users, color: 'bg-yellow-50 text-yellow-500', title: 'Evaluación del Comité Técnico de Inversión', content: 'El Comité ha realizado evaluaciones periódicas sobre el desempeño, concluyendo que la estructura actual se mantiene alineada con los parámetros de riesgo.' },
             { icon: ShieldCheck, color: 'bg-yellow-50 text-yellow-500', title: 'Solidez Operativa y Gobierno Interno', content: 'Procesos de control, seguimiento y validación que fortalecen la toma de decisiones y aseguran una gestión responsable del capital.' },
@@ -260,7 +260,7 @@ const ExecutiveSummary: React.FC = () => {
               </div>
               <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest border-b border-rose-200">Ver Detalles</span>
             </div>
-            <p className="text-text-secondary text-[10px] font-medium leading-relaxed">Rendimiento del 2.25% mensual procesado correctamente.</p>
+            <p className="text-text-secondary text-[10px] font-medium leading-relaxed">Rendimiento anual consolidado del 39.76% procesado correctamente.</p>
           </div>
         </div>
 
@@ -273,7 +273,7 @@ const ExecutiveSummary: React.FC = () => {
             {[
               { icon: Globe, label: 'Expansión de Cartera Forex', sub: 'Hoy, 09:30 AM', status: 'Ajuste Estratégico' },
               { icon: Coins, label: 'Adquisición Commodities', sub: 'Ayer, 16:00 PM', status: 'Hedge' },
-              { icon: Activity, label: 'Cierre Mensual de Utilidades', sub: '01 Dic, 10:00 AM', status: 'Ejecutado', statusColor: 'text-green-600' },
+              { icon: Activity, label: 'Cierre Anual de Utilidades', sub: '01 Dic, 10:00 AM', status: 'Ejecutado', statusColor: 'text-green-600' },
             ].map((item, i) => (
               <div key={i} className="flex items-center justify-between group">
                 <div className="flex items-center gap-4">

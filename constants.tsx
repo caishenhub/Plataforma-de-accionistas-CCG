@@ -6,7 +6,6 @@ import { supabase } from './lib/supabase';
 export const getStoredYield = (year: number, month: number) => {
   const saved = localStorage.getItem(`YIELD_${year}_${month}`);
   if (saved) return parseFloat(saved);
-  // Fallback al historial estático si no hay dato guardado
   const history = FINANCIAL_HISTORY[year];
   return history ? history[month] / 100 : 0;
 };
@@ -14,14 +13,7 @@ export const getStoredYield = (year: number, month: number) => {
 export const getPayoutStatus = (year: number, month: number): 'PENDING' | 'PAID' => {
   const status = localStorage.getItem(`PAYOUT_STATUS_${year}_${month}`);
   if (status) return status as 'PENDING' | 'PAID';
-
-  // Lógica de estados por defecto solicitada:
-  // Años anteriores a 2026 ya están liquidados/pagados por defecto
-  if (year < 2026) {
-    return 'PAID';
-  }
-
-  // 2026 en adelante inicia como PENDING hasta acción del admin
+  if (year < 2026) return 'PAID';
   return 'PENDING';
 };
 
@@ -32,7 +24,6 @@ export const adminSetYield = async (year: number, month: number, yieldValue: num
 
 export const adminUpdateGlobalPayoutStatus = (year: number, month: number, status: 'PENDING' | 'PAID') => {
   localStorage.setItem(`PAYOUT_STATUS_${year}_${month}`, status);
-  // Emitir evento global para sincronización inmediata en todos los componentes
   window.dispatchEvent(new Event('finance_update'));
 };
 
@@ -40,55 +31,80 @@ export const adminUpdatePayoutStatus = (year: number, month: number, status: 'PE
   adminUpdateGlobalPayoutStatus(year, month, status);
 };
 
-// --- GESTIÓN DE NOTIFICACIONES PUBLICADAS ---
-export const adminPublishNotification = (notification: AdminNotification) => {
-  const published = getPublishedNotifications();
-  if (!published.find(n => n.id === notification.id)) {
-    const updated = [...published, notification];
-    localStorage.setItem('PUBLISHED_NOTIFICATIONS', JSON.stringify(updated));
-    window.dispatchEvent(new Event('notifications_update'));
-  }
-};
-
-export const getPublishedNotifications = (): AdminNotification[] => {
-  const saved = localStorage.getItem('PUBLISHED_NOTIFICATIONS');
-  return saved ? JSON.parse(saved) : [];
-};
-
 // --- FUENTE DE VERDAD HISTÓRICA ---
 export const FINANCIAL_HISTORY: Record<number, number[]> = {
   2022: [-4.80, -3.60, 2.40, -9.60, -1.20, -7.90, 6.40, -3.90, -8.20, 5.60, 3.20, -6.10],
   2023: [3.40, 2.85, -2.10, 4.25, 3.90, 2.75, -1.65, 5.60, -2.95, 4.80, 2.10, 1.85],
   2024: [3.10, 2.45, -1.80, 4.60, 5.20, 3.85, -2.30, 6.40, 2.90, 4.15, 1.75, 1.95],
-  2025: [4.02, -2.00, 6.00, -1.50, 7.00, 4.50, 3.00, 4.17, 2.30, 2.18, 2.40, 2.25],
+  2025: [3.50, 2.10, 3.80, 2.45, 3.15, 2.90, 2.75, 3.20, 2.85, 3.10, 2.95, 2.68],
   2026: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 };
 
-const GLOBAL_AUM = 124425.00;
-
-export const FINANCE_CONFIG = {
-  TOTAL_SHARES: 500,
-  GLOBAL_AUM: GLOBAL_AUM,
-  TOTAL_PROFIT_2025: 32120.00,
-  NOMINAL_VALUE_PER_SHARE: 248.85,
-  CURRENT_MONTHLY_YIELD: 0.0225, 
-  ANNUAL_PROJECTION: 0.3976,
-  LAST_SIX_MONTHS_YIELD: 0.1845, 
-  RESERVE_GOAL_PCT: 100, 
-  IS_PERIOD_CLOSED: true
+const calculateScaleFactor = () => {
+  const years = [2022, 2023, 2024, 2025, 2026];
+  let totalFactor = 1;
+  years.forEach(y => {
+    const history = FINANCIAL_HISTORY[y] || [];
+    history.forEach((_, idx) => {
+      totalFactor *= (1 + getStoredYield(y, idx));
+    });
+  });
+  return totalFactor;
 };
 
-export const calculateUserFinance = (shares: number, year: number = 2025) => {
+const TARGET_PRICE_PER_SHARE = 248.85; 
+const TOTAL_ACCUMULATED_FACTOR = calculateScaleFactor();
+const BASE_VALUE_PER_SHARE = TARGET_PRICE_PER_SHARE / TOTAL_ACCUMULATED_FACTOR;
+
+const TOTAL_SHARES = 500;
+const GLOBAL_AUM = TOTAL_SHARES * TARGET_PRICE_PER_SHARE;
+
+export const FINANCE_CONFIG = {
+  BASE_VALUE_PER_SHARE,
+  TOTAL_SHARES,
+  GLOBAL_AUM,
+  NOMINAL_VALUE_PER_SHARE: TARGET_PRICE_PER_SHARE,
+  RESERVE_GOAL_PCT: 100
+};
+
+/**
+ * Calcula las finanzas individuales considerando el mes de ingreso (joinMonth)
+ * para el cálculo de rendimientos acumulados que le corresponden legalmente.
+ */
+export const calculateUserFinance = (shares: number, year: number = 2025, joinMonth: number = 0) => {
   const participation = shares / FINANCE_CONFIG.TOTAL_SHARES;
-  const balance = shares * FINANCE_CONFIG.NOMINAL_VALUE_PER_SHARE;
+  const yearsList = [2022, 2023, 2024, 2025, 2026];
   
+  // 1. Calcular el balance actual (basado en el valor de la acción hoy)
+  let currentFactor = 1;
+  for (const y of yearsList) {
+    const history = FINANCIAL_HISTORY[y] || [];
+    history.forEach((_, idx) => {
+      currentFactor *= (1 + getStoredYield(y, idx));
+    });
+    if (y === year) break;
+  }
+  const balance = shares * (BASE_VALUE_PER_SHARE * currentFactor);
+
+  // 2. Calcular rendimiento anual INDIVIDUAL (ventana de elegibilidad)
   const history = FINANCIAL_HISTORY[year] || [];
-  const annualYield = history.reduce((acc, curr) => acc + (curr / 100), 0);
+  let individualAnnualFactor = 1;
   
+  // Solo iteramos desde el mes de ingreso si es el año de ingreso o posterior
+  // (Nota: Si el año seleccionado es anterior al ingreso, el rendimiento es 0)
+  history.forEach((_, idx) => {
+    if (idx >= joinMonth) {
+      individualAnnualFactor *= (1 + getStoredYield(year, idx));
+    }
+  });
+
+  const annualYieldPct = (individualAnnualFactor - 1);
+
   return {
     participation: (participation * 100).toFixed(2) + '%',
     balance: balance,
-    annualProfit: balance * annualYield,
+    annualProfit: balance * annualYieldPct,
+    annualYieldPct: annualYieldPct * 100, // Porcentaje real del usuario
     monthlyProfit: balance * (history[11] / 100 || 0)
   };
 };
@@ -106,9 +122,9 @@ export const MOCK_NOTICES: CorporateNotice[] = [
     id: 'n1',
     title: 'Cierre de Periodo Diciembre',
     date: 'Actual',
-    description: 'Se han dispersado exitosamente los dividendos del 2.25% mensual (Diciembre).',
+    description: 'Se han dispersado exitosamente los dividendos del periodo final de 2025.',
     type: 'Success',
-    fullContent: 'La distribución ha sido completada y pagada proporcionalmente a todas las cuentas activas basada en el AUM de $124,425.00.'
+    fullContent: 'La distribución ha sido completada y pagada proporcionalmente a todas las cuentas activas basada en el AUM.'
   }
 ];
 
@@ -134,5 +150,19 @@ export const MOCK_WATCHLIST = [
 ];
 
 export const MOCK_REPORTS: Report[] = [
-  { id: 'rep1', title: 'Informe de Gestión Diciembre 2025', date: '15 Dic, 2025', category: 'Mensual', summary: 'Rendimiento mensual consolidado del 2.25% y estado de liquidez del fondo.' }
+  { id: 'rep1', title: 'Informe de Gestión Diciembre 2025', date: '15 Dic, 2025', category: 'Mensual', summary: 'Rendimiento anual consolidado del 39.76%.' }
 ];
+
+export const getPublishedNotifications = (): AdminNotification[] => {
+  const saved = localStorage.getItem('PUBLISHED_NOTIFICATIONS');
+  return saved ? JSON.parse(saved) : [];
+};
+
+export const adminPublishNotification = (notification: AdminNotification) => {
+  const published = getPublishedNotifications();
+  if (!published.find(n => n.id === notification.id)) {
+    const updated = [...published, notification];
+    localStorage.setItem('PUBLISHED_NOTIFICATIONS', JSON.stringify(updated));
+    window.dispatchEvent(new Event('notifications_update'));
+  }
+};

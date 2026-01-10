@@ -1,13 +1,10 @@
 
 import React from 'react';
-import { Building2, Globe, PieChart as PieIcon, Activity, Bitcoin, Coins, Landmark } from 'lucide-react';
+import { Building2, Globe, PieChart as PieIcon, Activity, Bitcoin, Coins, Landmark, Shield, BarChart3, Fingerprint } from 'lucide-react';
 import AssetDonutChart from './AssetDonutChart';
 import { FINANCE_CONFIG } from '../../constants';
 
 const Portfolio: React.FC = () => {
-  // Actualización del rendimiento acumulado solicitado a 39.76%
-  const accumulatedYield2025 = 39.76;
-
   const ASSET_DATA = [
     { id: 1, name: 'Divisas (Forex)', category: 'Forex', participacion: '20.6%', valor: `$${(25631).toLocaleString('en-US')}`, retorno: '+12.5%', icon: Globe, color: 'bg-gray-100' },
     { id: 2, name: 'Derivados', category: 'Derivados', participacion: '30.9%', valor: `$${(38447).toLocaleString('en-US')}`, retorno: '+8.9%', icon: Coins, color: 'bg-amber-50' },
@@ -26,7 +23,6 @@ const Portfolio: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         <div className="xl:col-span-5 bg-white rounded-3xl border border-surface-border p-5 md:p-8 shadow-sm flex flex-col">
           <h3 className="text-accent text-lg font-extrabold tracking-tight mb-8">Matriz de Distribución</h3>
-          {/* Contenedor con altura explícita para Recharts */}
           <div className="w-full h-[300px] md:h-[400px] flex items-center justify-center">
             <AssetDonutChart />
           </div>
@@ -35,20 +31,46 @@ const Portfolio: React.FC = () => {
         <div className="xl:col-span-7 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
             {[
-              { label: 'Acumulado 2025', value: `+${accumulatedYield2025}%` },
-              { label: 'Rendimiento Mes', value: `+${(FINANCE_CONFIG.CURRENT_MONTHLY_YIELD * 100).toFixed(2)}%` },
-              { label: 'Reserva Técnica', value: '100%' }
+              { 
+                label: 'Diversificación', 
+                value: '8.4/10', 
+                sub: 'Alta Dispersión', 
+                icon: Fingerprint,
+                color: 'text-accent'
+              },
+              { 
+                label: 'Mayor Exposición', 
+                value: '30.9%', 
+                sub: 'Derivados', 
+                icon: BarChart3,
+                color: 'text-accent'
+              },
+              { 
+                label: 'Riesgo Estructural', 
+                value: 'MODERADO', 
+                sub: 'Perfil Dinámico', 
+                icon: Shield,
+                color: 'text-primary'
+              }
             ].map((stat, i) => (
-              <div key={i} className="bg-white border border-surface-border rounded-2xl p-5 shadow-sm">
-                <span className="text-text-muted text-[9px] font-black uppercase tracking-widest block mb-2">{stat.label}</span>
-                <h4 className="text-xl md:text-2xl font-black text-accent tracking-tighter">{stat.value}</h4>
+              <div key={i} className="bg-white border border-surface-border rounded-2xl p-5 shadow-sm group hover:border-primary transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-text-muted text-[9px] font-black uppercase tracking-widest block">{stat.label}</span>
+                  <stat.icon size={14} className="text-text-muted group-hover:text-primary transition-colors" />
+                </div>
+                <h4 className={`text-xl md:text-2xl font-black tracking-tighter ${stat.color}`}>{stat.value}</h4>
+                <p className="text-[10px] font-bold text-text-secondary mt-1 uppercase tracking-tight">{stat.sub}</p>
               </div>
             ))}
           </div>
 
           <div className="bg-white rounded-3xl border border-surface-border shadow-sm overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-surface-border">
+            <div className="p-5 border-b border-surface-border flex justify-between items-center">
               <h3 className="text-accent text-lg font-extrabold tracking-tight">Detalle Operativo</h3>
+              <div className="flex items-center gap-2">
+                <div className="size-2 bg-primary rounded-full animate-pulse"></div>
+                <span className="text-[9px] font-black text-accent uppercase tracking-widest">Mercado Abierto</span>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[500px]">

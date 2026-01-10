@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
@@ -22,17 +21,33 @@ interface ShareholderProfileProps {
 }
 
 const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack }) => {
-  // Filtro especial para Juan Andres Suarez (#USR-008)
+  // Filtro especial para Juan Andres Suarez (#USR-008) y accionistas de 20 acciones
   const isJuanAndres = user.uid === '#USR-008';
+  const has20Shares = user.shares === 20;
   
-  // Si es Juan Andres, el año inicial es 2025 y no puede ver años anteriores
-  const [selectedYear, setSelectedYear] = useState(isJuanAndres ? 2025 : 2025);
+  // Mes de ingreso: 8 para Juan Andres (Septiembre)
+  const joinMonth = isJuanAndres ? 8 : 0;
+  
+  const [selectedYear, setSelectedYear] = useState(2025);
   const [updateKey, setUpdateKey] = useState(0);
   
-  const finances = useMemo(() => calculateUserFinance(user.shares, selectedYear), [user.shares, selectedYear, updateKey]);
+  // Calculamos finanzas inyectando el mes de ingreso
+  const finances = useMemo(() => {
+    const baseFinances = calculateUserFinance(user.shares, selectedYear, joinMonth);
+    
+    // Si es el accionista de 20 acciones, forzamos los valores reales solicitados
+    if (has20Shares && selectedYear === 2025) {
+      return {
+        ...baseFinances,
+        annualYieldPct: 11.58, // Suma simple 2.85+3.10+2.95+2.68
+        annualProfit: 576.33,   // Suma 141.84+154.29+146.82+133.38
+      };
+    }
+    return baseFinances;
+  }, [user.shares, selectedYear, updateKey, joinMonth, has20Shares]);
+  
   const isAdmin = user.uid === '#ADM-001';
 
-  // Sincronizar con actualizaciones globales del administrador
   useEffect(() => {
     const handleUpdate = () => setUpdateKey(prev => prev + 1);
     window.addEventListener('finance_update', handleUpdate);
@@ -41,7 +56,14 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
 
   const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-  // Años disponibles: Juan Andres solo ve 2025 y 2026
+  // Datos reales para el accionista de 20 acciones (Septiembre a Diciembre 2025)
+  const realData20Shares = [
+    { pct: 2.85, usd: 141.84 }, // Septiembre (idx 8)
+    { pct: 3.10, usd: 154.29 }, // Octubre (idx 9)
+    { pct: 2.95, usd: 146.82 }, // Noviembre (idx 10)
+    { pct: 2.68, usd: 133.38 }  // Diciembre (idx 11)
+  ];
+
   const availableYears = isJuanAndres ? [2025, 2026] : [2023, 2024, 2025, 2026];
 
   return (
@@ -79,10 +101,10 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { label: 'Acciones Poseídas', value: user.shares.toString(), sub: 'Fondo CCG', icon: Target, bg: 'bg-primary' },
-            { label: 'Participación', value: finances.participation, sub: 'Fondo Global', icon: PieIcon, bg: 'bg-accent text-white' },
-            { label: `Rendimiento ${selectedYear}`, value: `+$${finances.annualProfit.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, sub: 'Anual Acumulado', icon: TrendingUp, bg: 'bg-primary' },
-            { label: 'Proyección Anual', value: `42.8%`, sub: 'ROI Estimado', icon: Award, bg: 'bg-accent text-white' },
+            { label: 'Acciones Poseídas', value: user.shares.toString(), sub: 'Fondo CCG', icon: Target },
+            { label: 'Participación', value: finances.participation, sub: 'Fondo Global', icon: PieIcon },
+            { label: `Rendimiento ${selectedYear}`, value: `+${finances.annualYieldPct.toFixed(2)}%`, sub: 'ROI del Accionista', icon: TrendingUp },
+            { label: 'Utilidad Generada', value: `+$${finances.annualProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, sub: 'Cierre de Periodo', icon: Award },
           ].map((stat, i) => (
             <div key={i} className="bg-white rounded-[32px] shadow-sm border border-surface-border p-7 flex flex-col justify-between hover:shadow-premium transition-all min-h-[160px]">
               <div className="flex justify-between items-start mb-4">
@@ -91,6 +113,7 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
               <div>
                 <h3 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-1">{stat.label}</h3>
                 <div className="flex items-baseline gap-1.5"><span className="text-3xl font-black text-accent tracking-tighter">{stat.value}</span></div>
+                <p className="text-[10px] font-bold text-text-secondary mt-1 uppercase tracking-tight">{stat.sub}</p>
               </div>
             </div>
           ))}
@@ -119,23 +142,35 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {monthNames.map((month, idx) => {
-                  // Filtro para Juan Andres: Ocultar meses antes de Septiembre (indice 8) solo en 2025
-                  if (isJuanAndres && selectedYear === 2025 && idx < 8) {
+                  // Filtro para usuarios con ingreso posterior
+                  if (selectedYear === 2025 && idx < joinMonth) {
                     return null;
                   }
 
-                  const yld = getStoredYield(selectedYear, idx);
+                  let displayYield: number;
+                  let displayProfit: number;
                   const status = getPayoutStatus(selectedYear, idx);
-                  const monthlyProfit = finances.balance * yld;
-                  
-                  const formattedProfit = monthlyProfit.toFixed(2).replace('.', ',');
+
+                  // Lógica para accionista de 20 acciones en 2025
+                  if (has20Shares && selectedYear === 2025 && idx >= 8 && idx <= 11) {
+                    const realValues = realData20Shares[idx - 8];
+                    displayYield = realValues.pct / 100;
+                    displayProfit = realValues.usd;
+                  } else {
+                    displayYield = getStoredYield(selectedYear, idx);
+                    displayProfit = finances.balance * displayYield;
+                  }
+
+                  const formattedProfit = displayProfit.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
                   return (
                     <tr key={`${selectedYear}-${idx}-${updateKey}`} className="hover:bg-surface-subtle/50 transition-colors">
                       <td className="px-8 py-6 flex items-center gap-4">
                         <span className="text-sm font-black text-accent">{month}</span>
                       </td>
-                      <td className="px-8 py-6 text-right font-black text-accent">{yld > 0 ? `+${(yld * 100).toFixed(2)}%` : '0.00%'}</td>
+                      <td className="px-8 py-6 text-right font-black text-accent">
+                        {displayYield !== 0 ? `+${(displayYield * 100).toFixed(2)}%` : '0.00%'}
+                      </td>
                       <td className="px-8 py-6 text-right font-bold text-text-secondary">${formattedProfit}</td>
                       <td className="px-8 py-6 text-center">
                         <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
