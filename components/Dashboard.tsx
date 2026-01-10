@@ -62,9 +62,9 @@ const Dashboard: React.FC = () => {
     return FINANCE_CONFIG.RESERVE_GOAL_PCT;
   }, [selectedPeriod]);
 
-  // Datos extendidos para Transacciones
+  // Datos extendidos para Transacciones - Ajustado: Dispersión de Diciembre se realiza en Enero
   const transactions = [
-    { id: 'tx1', type: 'dividend', amount: 31450.20, date: '05 Ene, 2026', desc: 'Dispersión Dividendos Anuales (41.77%)', status: 'Finalizado' },
+    { id: 'tx1', type: 'dividend', amount: 31450.20, date: '05 Ene, 2026', desc: 'DISPERSIÓN DIVIDENDOS ANUALES (41.77%)', status: 'Finalizado' },
     { id: 'tx2', type: 'rebalance', amount: 12400.00, date: '10 Dic, 2025', desc: 'Ajuste Portafolio Derivados T4', status: 'Completado' },
     { id: 'tx3', type: 'audit', amount: 0, date: '05 Dic, 2025', desc: 'Certificación de Activos', status: 'Verificado' },
     { id: 'tx4', type: 'injection', amount: 45000.00, date: '28 Nov, 2025', desc: 'Inyección Capital Institucional Grupo A', status: 'Completado' },
@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
 
   const marketWatch = [
     { id: 'w1', name: 'S&P 500 Index', symbol: 'SPX', price: '5,982.10', change: '+1.45%', trend: [40, 60, 55, 80, 95], color: '#1d1c2d', pos: true },
-    { id: 'w2', name: 'Gold (Spot)', symbol: 'XAU/USD', price: '4,510.00', change: '+0.82%', trend: [70, 65, 80, 75, 90], color: '#D4AF37', pos: true },
+    { id: 'w2', name: 'Gold (Spot)', symbol: 'XAU/USD', price: '2,645.40', change: '+0.82%', trend: [70, 65, 80, 75, 90], color: '#D4AF37', pos: true },
     { id: 'w3', name: 'Bitcoin', symbol: 'BTC', price: '96,240.00', change: '-2.15%', trend: [95, 80, 70, 60, 50], color: '#f7931a', pos: false },
     { id: 'w4', name: 'EUR / USD', symbol: 'Forex', price: '1.0845', change: '+0.12%', trend: [30, 35, 32, 40, 42], color: '#3b82f6', pos: true },
   ];
