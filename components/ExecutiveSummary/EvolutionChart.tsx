@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { FINANCIAL_HISTORY, getStoredYield } from '../../constants';
@@ -11,27 +10,30 @@ const MONTH_NAMES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SE
 
 const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
   
-  const base2026 = useMemo(() => {
-    const yields2025 = FINANCIAL_HISTORY[2025] || [];
-    let closingValue = 100;
-    yields2025.forEach(y => {
-      closingValue = closingValue * (1 + y / 100);
-    });
-    return closingValue;
-  }, []);
+  const baseValue = useMemo(() => {
+    if (year === 2026) {
+      const yields2025 = FINANCIAL_HISTORY[2025] || [];
+      let closingValue = 100;
+      yields2025.forEach((_, idx) => {
+        const y = getStoredYield(2025, idx);
+        closingValue = closingValue * (1 + y);
+      });
+      return closingValue;
+    }
+    return 100;
+  }, [year]);
 
   const chartData = useMemo(() => {
-    const isYear2026 = year === 2026;
-    let cumulativeValue = isYear2026 ? base2026 : 100;
-    
+    let cumulativeValue = baseValue;
     const data = [];
     
     for (let i = 0; i < 12; i++) {
       const y = getStoredYield(year, i);
-      const hasData = isYear2026 ? (y !== 0 || localStorage.getItem(`YIELD_${year}_${i}`) !== null) : true;
+      // Para 2026 solo mostramos meses con datos (y != 0)
+      const hasData = year !== 2026 || (y !== 0 || localStorage.getItem(`YIELD_${year}_${i}`) !== null);
       
       if (hasData) {
-        cumulativeValue = cumulativeValue * (1 + y / 100);
+        cumulativeValue = cumulativeValue * (1 + y);
         data.push({
           name: MONTH_NAMES[i],
           value: parseFloat(cumulativeValue.toFixed(2)),
@@ -41,7 +43,7 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
     }
     
     return data;
-  }, [year, base2026]);
+  }, [year, baseValue]);
 
   return (
     <div className="h-72 w-full">
@@ -49,8 +51,8 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
         <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 30, bottom: 10 }}>
           <defs>
             <linearGradient id="colorEvolution" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ccfd08" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#ccfd08" stopOpacity={0} />
+              <stop offset="5%" stopColor="#ceff04" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="#ceff04" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="5 5" vertical={false} stroke="#f1f4e6" />
@@ -70,22 +72,21 @@ const EvolutionChart: React.FC<EvolutionChartProps> = ({ year }) => {
               padding: '12px',
               boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
             }}
-            itemStyle={{ color: '#ccfd08', fontSize: '12px', fontWeight: 900 }}
+            itemStyle={{ color: '#ceff04', fontSize: '12px', fontWeight: 900 }}
             labelStyle={{ color: '#9CA3AF', fontSize: '10px', fontWeight: 700, marginBottom: '4px', textTransform: 'uppercase' }}
-            cursor={{ stroke: '#1d1c2d', strokeWidth: 2, strokeDasharray: '4 4' }}
-            formatter={(value: any) => [`${value} Pts`, 'Caishen Index']}
+            cursor={{ stroke: '#1d1c2d', strokeWidth: 1, strokeDasharray: '4 4' }}
+            formatter={(value: any) => [`${value} Pts`, 'CCG Index']}
           />
           <Area 
-            key={year}
             type="monotone" 
             dataKey="value" 
             stroke="#1d1c2d" 
             strokeWidth={4} 
             fillOpacity={1} 
             fill="url(#colorEvolution)" 
-            dot={{ r: 5, fill: '#ccfd08', stroke: '#1d1c2d', strokeWidth: 2 }}
-            activeDot={{ r: 7, fill: '#ccfd08', stroke: '#1d1c2d', strokeWidth: 2 }}
-            animationDuration={1500}
+            dot={{ r: 4, fill: '#ceff04', stroke: '#1d1c2d', strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: '#ceff04', stroke: '#1d1c2d', strokeWidth: 2 }}
+            animationDuration={1000}
           />
         </AreaChart>
       </ResponsiveContainer>

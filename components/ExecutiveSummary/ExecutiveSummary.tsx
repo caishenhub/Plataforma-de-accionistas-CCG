@@ -16,24 +16,31 @@ import {
   Info,
   ChevronDown,
   X,
-  Check
+  Check,
+  Shield,
+  Zap,
+  Clock,
+  Bitcoin,
+  FileText
 } from 'lucide-react';
 import EvolutionChart from './EvolutionChart';
 import AssetDistributionDonut from './AssetDistributionDonut';
-import { MOCK_NOTICES } from '../../constants';
+import { MOCK_NOTICES, FINANCE_CONFIG } from '../../constants';
 import NoticeModal from './NoticeModal';
 import { CorporateNotice } from '../../types';
+import DetailedOperationalReport from '../Portfolio/DetailedOperationalReport';
 
 interface KpiDetail {
   id: string;
   title: string;
   description: string;
-  icon: React.Node;
+  icon: React.ReactNode;
 }
 
 const ExecutiveSummary: React.FC = () => {
   const [selectedNotice, setSelectedNotice] = useState<CorporateNotice | null>(null);
   const [activeDetail, setActiveDetail] = useState<KpiDetail | null>(null);
+  const [showDetailedReport, setShowDetailedReport] = useState(false);
 
   const KPI_DETAILS: Record<string, KpiDetail> = {
     balance: {
@@ -45,14 +52,14 @@ const ExecutiveSummary: React.FC = () => {
     utilidad: {
       id: 'utilidad',
       title: 'Utilidad Anual 2025',
-      description: 'Rendimiento consolidado del año 2025 mediante interés compuesto mensual, alcanzando un objetivo estratégico del 39.76%. Este valor refleja la eficiencia operativa del portafolio durante el ejercicio.',
+      description: 'Rendimiento consolidado del año 2025 mediante interés compuesto mensual, alcanzando un objetivo estratégico del 41,77%. Este valor refleja la eficiencia operativa del portafolio durante el ejercicio.',
       icon: <LineChart size={24} className="text-accent" />
     },
     ajuste: {
       id: 'ajuste',
       title: 'Ajuste Controlado',
       description: 'Indica la aplicación de controles de riesgo y ajustes operativos destinados a mantener la exposición dentro de límites definidos, buscando estabilidad y protección del capital.',
-      icon: <ShieldCheck size={24} className="text-accent" />
+      icon: <ShieldCheck size={18} className="text-accent" />
     },
     estabilidad: {
       id: 'estabilidad',
@@ -76,7 +83,6 @@ const ExecutiveSummary: React.FC = () => {
 
       {/* 2. Grid de KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
         {/* Balance Total */}
         <div onClick={() => setActiveDetail(KPI_DETAILS.balance)} className={kpiCardClass}>
           <div className="flex justify-between items-start">
@@ -90,7 +96,7 @@ const ExecutiveSummary: React.FC = () => {
           </div>
           <div className="mt-auto pt-2 flex items-center justify-between h-8">
             <div className="bg-primary/20 text-accent text-[10px] font-black px-3 py-1.5 rounded-xl w-fit flex items-center gap-1 shadow-sm">
-              <TrendingUp size={12} /> +39.76%
+              <TrendingUp size={12} /> +41,77%
             </div>
             <Info size={14} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -105,7 +111,7 @@ const ExecutiveSummary: React.FC = () => {
             </div>
           </div>
           <div className="flex-1 flex items-center py-4">
-            <h3 className={valueClass}>39.76%</h3>
+            <h3 className={valueClass}>41,77%</h3>
           </div>
           <div className="mt-auto pt-2 flex items-center justify-between h-8 w-full gap-4">
             <div className="h-4 flex-1 bg-surface-subtle rounded-full overflow-hidden p-0.5 border border-surface-border">
@@ -152,24 +158,157 @@ const ExecutiveSummary: React.FC = () => {
         </div>
       </div>
 
+      {/* 3. BLOQUE REESTRUCTURADO: MATRIZ ESTRATÉGICA Y RESUMEN DE DESEMPEÑO T4 */}
+      <div className="bg-white rounded-[40px] border border-surface-border p-8 lg:p-12 shadow-premium overflow-hidden">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-center">
+          
+          {/* Columna Izquierda: Matriz Estratégica (Donut de Liquidez) */}
+          <div className="xl:col-span-5 flex flex-col space-y-8 relative">
+            <div className="space-y-1">
+              <h3 className="text-accent text-2xl font-black tracking-tighter uppercase">Matriz Estratégica</h3>
+              <p className="text-text-muted text-[10px] font-bold uppercase tracking-widest">Estrategia de Liquidez (Inc. Crypto & Forex).</p>
+            </div>
+            
+            <div className="relative flex justify-center items-center py-6">
+              {/* Etiquetas externas Opción B con enfoque Crypto */}
+              <div className="absolute top-0 right-0 text-right">
+                <span className="text-primary text-[11px] font-black uppercase tracking-widest block">80% LIQUIDEZ INMEDIATA</span>
+                <div className="h-0.5 w-12 bg-primary ml-auto mt-1"></div>
+              </div>
+              
+              <div className="absolute bottom-0 left-0 text-left">
+                <span className="text-accent text-[11px] font-black uppercase tracking-widest block">20% CAPITAL ESTRATÉGICO</span>
+                <div className="h-0.5 w-12 bg-accent mr-auto mt-1"></div>
+              </div>
+
+              <div className="w-full max-w-[280px]">
+                <AssetDistributionDonut />
+              </div>
+            </div>
+
+            {/* Bloque Secundario: Distribución Operativa del Capital */}
+            <div className="bg-surface-subtle rounded-3xl p-6 border border-surface-border space-y-4">
+              <h4 className="text-[10px] font-black text-accent uppercase tracking-widest border-b border-gray-200 pb-2">Distribución Operativa del Capital</h4>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: 'Crypto', val: '50%', color: 'bg-blue-400', icon: Bitcoin },
+                  { label: 'Forex', val: '20%', color: 'bg-accent', icon: Globe },
+                  { label: 'Oro', val: '30%', color: 'bg-[#D4AF37]', icon: Coins },
+                ].map((item) => (
+                  <div key={item.label} className="flex flex-col gap-1">
+                    <div className="flex items-center gap-1.5">
+                      <div className={`size-1.5 rounded-full ${item.color}`}></div>
+                      <span className="text-[9px] font-black text-text-muted uppercase tracking-tighter">{item.label}</span>
+                    </div>
+                    <span className="text-sm font-black text-accent">{item.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Divisor Vertical Visible en XL */}
+          <div className="hidden xl:block w-px h-full bg-gray-100 xl:col-span-1 mx-auto"></div>
+
+          {/* Columna Derecha: Resumen de Desempeño */}
+          <div className="xl:col-span-6 flex flex-col justify-between h-full space-y-10">
+            <div className="space-y-8">
+              <h3 className="text-accent text-2xl font-black tracking-tighter uppercase">Resumen de Desempeño T4</h3>
+              
+              <div className="space-y-6">
+                <p className="text-text-secondary text-sm md:text-base leading-relaxed font-medium">
+                  Nuestra **Matriz Estratégica** refleja la capacidad de liquidez del portafolio, donde un **80%** se mantiene como liquidez inmediata. Este segmento incorpora activos digitales (Crypto) y divisas (Forex), permitiendo una respuesta ágil ante las condiciones del mercado.
+                </p>
+                <p className="text-text-secondary text-sm md:text-base leading-relaxed font-medium">
+                  La **Distribución Operativa** detalla la asignación real del capital en instrumentos de alto rendimiento y resguardo. Esta diversificación estratégica ha consolidado un crecimiento del <span className="text-accent font-black">+41,77% anual</span>, manteniendo la solidez del AUM bajo gestión.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-10 border-t border-gray-50 mt-auto">
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-3 overflow-hidden">
+                  {/* Avatar Izquierdo: Caishen Logo con borde Verde */}
+                  <img 
+                    src="https://i.ibb.co/zT3RhhT9/CAISHEN-NO-FONDI-AZUL-1.png" 
+                    className="size-11 rounded-full border-2 border-primary bg-white object-cover shadow-sm" 
+                    alt="Caishen Capital Group Logo" 
+                  />
+                  {/* Avatar Derecho: Legal Count con borde Azul */}
+                  <img 
+                    src="https://i.ibb.co/NgZbhx17/legal-Count.png" 
+                    className="size-11 rounded-full border-2 border-accent bg-white object-cover shadow-sm" 
+                    alt="Legal Count Technical Seal" 
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.18em] leading-tight">VERIFICADO POR EL COMITÉ TÉCNICO</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[12px] font-black text-accent tracking-tight uppercase">RATIFICADO POR ACTA DE JUNTA TÉCNICA</span>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowDetailedReport(true)}
+                className="bg-accent text-white font-black px-10 py-4 rounded-xl hover:bg-accent/90 transition-all uppercase text-[10px] tracking-widest shadow-xl shrink-0"
+              >
+                Informe Completo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL DEL INFORME DETALLADO (DETALLE OPERATIVO T4) */}
+      {showDetailedReport && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-accent/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setShowDetailedReport(false)} />
+          <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col border border-white/20">
+            <header className="p-8 border-b border-surface-border flex justify-between items-center shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-primary/20 rounded-2xl">
+                  <FileText size={24} className="text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-accent tracking-tighter uppercase leading-none">Análisis Institucional T4</h2>
+                  <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mt-1">Sincronización estratégica v4.2.1</p>
+                </div>
+              </div>
+              <button onClick={() => setShowDetailedReport(false)} className="p-3 hover:bg-surface-subtle rounded-2xl transition-all">
+                <X size={24} className="text-text-muted" />
+              </button>
+            </header>
+            
+            <div className="flex-1 overflow-y-auto p-8 lg:p-12 scroll-smooth hide-scrollbar bg-white">
+              <DetailedOperationalReport />
+            </div>
+
+            <footer className="p-8 border-t border-surface-border bg-surface-subtle/30 flex justify-end shrink-0">
+              <button 
+                onClick={() => setShowDetailedReport(false)}
+                className="bg-accent text-primary font-black px-10 py-4 rounded-2xl hover:bg-accent/90 transition-all uppercase text-[10px] tracking-[0.2em] shadow-xl"
+              >
+                Entendido
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
       {/* KPI DETAIL MODAL */}
       {activeDetail && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-accent/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setActiveDetail(null)} />
           <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="p-10 space-y-8">
-              <div className="flex justify-between items-start">
-                <div className="size-16 bg-primary/20 rounded-[20px] flex items-center justify-center">
-                  {activeDetail.icon}
-                </div>
-                <button onClick={() => setActiveDetail(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <X size={24} className="text-text-muted" />
-                </button>
+            <div className="p-10 text-center space-y-8">
+              <div className="mx-auto size-16 bg-primary/20 rounded-[20px] flex items-center justify-center">
+                {activeDetail.icon}
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 text-center">
                 <h3 className="text-2xl font-black text-accent tracking-tighter uppercase">{activeDetail.title}</h3>
-                <div className="h-1 w-12 bg-primary rounded-full"></div>
-                <p className="text-text-secondary text-sm leading-relaxed font-medium">
+                <div className="h-1 w-12 bg-primary mx-auto rounded-full"></div>
+                <p className="text-text-secondary text-sm leading-relaxed font-medium px-4">
                   {activeDetail.description}
                 </p>
               </div>
@@ -185,33 +324,12 @@ const ExecutiveSummary: React.FC = () => {
         </div>
       )}
 
-      {/* 3. Gráficos Centrales */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2 bg-white rounded-[40px] border border-surface-border p-8 lg:p-10 shadow-premium">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-accent text-xl font-black tracking-tight uppercase">Evolución de Fondos Globales</h3>
-            <div className="bg-green-50 px-4 py-2 rounded-2xl border border-green-100 flex items-center gap-2">
-              <TrendingUp size={14} className="text-green-500" />
-              <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">+39.76%</span>
-            </div>
-          </div>
-          <div className="h-[350px] w-full">
-            <EvolutionChart year={2025} />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-[40px] border border-surface-border p-8 lg:p-10 shadow-premium flex flex-col items-center justify-center text-center">
-          <h3 className="text-accent text-xl font-black tracking-tight uppercase mb-10 w-full text-left">Distribución Estratégica</h3>
-          <AssetDistributionDonut />
-        </div>
-      </div>
-
       {/* 4. Informe Estratégico */}
       <div className="space-y-6">
         <h2 className="text-accent text-2xl font-black tracking-tighter uppercase border-l-4 border-primary pl-4">Informe Estratégico</h2>
         <div className="grid grid-cols-1 gap-4">
           {[
-            { icon: LineChart, color: 'bg-green-50 text-green-500', title: 'Evolución del Portafolio – Lectura General', content: 'Durante el periodo reciente, el portafolio ha mostrado una evolución consistente, alcanzando un hito del 39.76% anual en 2025.' },
+            { icon: LineChart, color: 'bg-green-50 text-green-500', title: 'Evolución del Portafolio – Lectura General', content: 'Durante el periodo reciente, el portafolio ha mostrado una evolución consistente, alcanzando un hito del 41,77% anual en 2025.' },
             { icon: Settings2, color: 'bg-yellow-50 text-yellow-500', title: 'Estado Operativo del Portafolio', content: 'El portafolio se encuentra actualmente en una fase de estabilidad operativa, con una estructura diversificada y mecanismos de protección activos.' },
             { icon: Users, color: 'bg-yellow-50 text-yellow-500', title: 'Evaluación del Comité Técnico de Inversión', content: 'El Comité ha realizado evaluaciones periódicas sobre el desempeño, concluyendo que la estructura actual se mantiene alineada con los parámetros de riesgo.' },
             { icon: ShieldCheck, color: 'bg-yellow-50 text-yellow-500', title: 'Solidez Operativa y Gobierno Interno', content: 'Procesos de control, seguimiento y validación que fortalecen la toma de decisiones y aseguran una gestión responsable del capital.' },
@@ -260,7 +378,7 @@ const ExecutiveSummary: React.FC = () => {
               </div>
               <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest border-b border-rose-200">Ver Detalles</span>
             </div>
-            <p className="text-text-secondary text-[10px] font-medium leading-relaxed">Rendimiento anual consolidado del 39.76% procesado correctamente.</p>
+            <p className="text-text-secondary text-[10px] font-medium leading-relaxed">Rendimiento anual consolidado del 41,77% procesado correctamente.</p>
           </div>
         </div>
 

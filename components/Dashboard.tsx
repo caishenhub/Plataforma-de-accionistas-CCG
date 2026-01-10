@@ -69,6 +69,12 @@ const Dashboard: React.FC = () => {
     };
   }, [selectedPeriod]);
 
+  // Lógica dinámica para el Fondo de Reserva según el año
+  const reserveValue = useMemo(() => {
+    if (selectedPeriod === 2022) return 94.25;
+    return FINANCE_CONFIG.RESERVE_GOAL_PCT;
+  }, [selectedPeriod]);
+
   const getTransactionIcon = (description: string) => {
     if (description.includes('Dividendo')) return <PiggyBank className="size-5" />;
     if (description.includes('Acciones')) return <Target className="size-5" />;
@@ -124,10 +130,11 @@ const Dashboard: React.FC = () => {
         />
         <StatCard 
           title="FONDO DE RESERVA" 
-          value={`${FINANCE_CONFIG.RESERVE_GOAL_PCT}%`} 
-          progress={FINANCE_CONFIG.RESERVE_GOAL_PCT} 
+          value={`${reserveValue}%`} 
+          progress={reserveValue} 
           icon={ShieldCheck} 
           variant="light"
+          changeLabel={selectedPeriod === 2022 ? "Soporte de Pérdidas Activo" : "Cobertura Total Garantizada"}
         />
       </div>
 

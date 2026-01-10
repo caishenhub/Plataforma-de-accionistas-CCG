@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Lock, ShieldCheck, AlertCircle, X, ChevronRight } from 'lucide-react';
 
 const MOCK_USERS = [
@@ -40,13 +40,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  const handleContinue = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!identifier.trim()) return;
-    setShowPinModal(true);
-  };
-
-  const validateAccess = () => {
+  const validateAccess = useCallback(() => {
     const user = MOCK_USERS.find(u => 
       u.email.toLowerCase() === identifier.toLowerCase() || 
       u.uid.toLowerCase() === identifier.toLowerCase()
@@ -60,13 +54,49 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }));
       setIsAuthenticated(true);
       setShowPinModal(false);
-      // Forzar redirección al panel de control (Dashboard) al iniciar sesión
       window.location.hash = '/';
     } else {
       setError('Credenciales de acceso inválidas');
       setPin('');
       setTimeout(() => setError(''), 3000);
     }
+  }, [identifier, pin]);
+
+  // Manejador de teclado físico para el PIN
+  useEffect(() => {
+    if (!showPinModal) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Números 0-9
+      if (/^[0-9]$/.test(e.key)) {
+        if (pin.length < 4) {
+          setPin(prev => prev + e.key);
+        }
+      }
+      // Borrar
+      else if (e.key === 'Backspace') {
+        setPin(prev => prev.slice(0, -1));
+      }
+      // Enter para validar
+      else if (e.key === 'Enter') {
+        if (pin.length === 4) {
+          validateAccess();
+        }
+      }
+      // Escape para cerrar
+      else if (e.key === 'Escape') {
+        setShowPinModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showPinModal, pin, validateAccess]);
+
+  const handleContinue = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!identifier.trim()) return;
+    setShowPinModal(true);
   };
 
   if (isLoading) return null;
@@ -130,13 +160,14 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <div className="space-y-2">
                 <h3 className="text-xl font-black text-accent tracking-tighter uppercase">Ingrese su PIN</h3>
                 <p className="text-xs text-text-secondary font-medium px-4">Código único para <span className="text-accent font-bold">{identifier}</span></p>
+                <p className="text-[9px] text-text-muted font-bold uppercase tracking-widest">Soporta teclado numérico físico</p>
               </div>
               <div className="flex justify-center gap-3">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className={`size-12 rounded-xl border-2 flex items-center justify-center transition-all ${
                     pin.length > i ? 'border-primary bg-primary/10' : 'border-surface-border bg-surface-subtle'
                   }`}>
-                    {pin.length > i && <div className="size-2.5 bg-accent rounded-full" />}
+                    {pin.length > i && <div className="size-2.5 bg-accent rounded-full animate-in zoom-in-50 duration-200" />}
                   </div>
                 ))}
               </div>

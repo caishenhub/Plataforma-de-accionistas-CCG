@@ -150,7 +150,7 @@ export const MOCK_WATCHLIST = [
 ];
 
 export const MOCK_REPORTS: Report[] = [
-  { id: 'rep1', title: 'Informe de Gestión Diciembre 2025', date: '15 Dic, 2025', category: 'Mensual', summary: 'Rendimiento anual consolidado del 39.76%.' }
+  { id: 'rep1', title: 'Informe de Gestión Diciembre 2025', date: '15 Dic, 2025', category: 'Mensual', summary: 'Rendimiento anual consolidado del 41.77%.' }
 ];
 
 export const getPublishedNotifications = (): AdminNotification[] => {
