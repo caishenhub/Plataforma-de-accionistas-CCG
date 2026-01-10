@@ -1,48 +1,49 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { FINANCIAL_HISTORY, getStoredYield } from '../../constants';
 
 // DATASETS CRONOLÓGICOS (Valores normalizados para continuidad)
 const data2022 = [
-  { name: 'ENE', year: '2022', portfolio: 1000000, benchmark: 1000000, pYield: -4.8, bYield: -5.2 },
-  { name: 'FEB', year: '2022', portfolio: 964000, benchmark: 948000, pYield: -3.6, bYield: -3.1 },
-  { name: 'MAR', year: '2022', portfolio: 987136, benchmark: 982000, pYield: 2.4, bYield: 3.6 },
-  { name: 'ABR', year: '2022', portfolio: 892371, benchmark: 896000, pYield: -9.6, bYield: -8.8 },
-  { name: 'MAY', year: '2022', portfolio: 881662, benchmark: 897000, pYield: -1.2, bYield: 0.1 },
-  { name: 'JUN', year: '2022', portfolio: 812011, benchmark: 822000, pYield: -7.9, bYield: -8.3 },
-  { name: 'JUL', year: '2022', portfolio: 863980, benchmark: 896000, pYield: 6.4, bYield: 9.1 },
-  { name: 'AGO', year: '2022', portfolio: 830284, benchmark: 858000, pYield: -3.9, bYield: -4.2 },
-  { name: 'SEP', year: '2022', portfolio: 762201, benchmark: 778000, pYield: -8.2, bYield: -9.3 },
-  { name: 'OCT', year: '2022', portfolio: 804884, benchmark: 840000, pYield: 5.6, bYield: 8.0 },
-  { name: 'NOV', year: '2022', portfolio: 830640, benchmark: 885000, pYield: 3.2, bYield: 5.4 },
-  { name: 'DIC', year: '2022', portfolio: 780000, benchmark: 832000, pYield: -6.1, bYield: -5.9 },
+  { name: 'ENE', year: '2022', portfolio: 1000000, benchmark: 1000000, pYield: -4.80, bYield: -5.2 },
+  { name: 'FEB', year: '2022', portfolio: 964000, benchmark: 948000, pYield: -3.60, bYield: -3.1 },
+  { name: 'MAR', year: '2022', portfolio: 987136, benchmark: 982000, pYield: 2.40, bYield: 3.6 },
+  { name: 'ABR', year: '2022', portfolio: 892371, benchmark: 896000, pYield: -9.60, bYield: -8.8 },
+  { name: 'MAY', year: '2022', portfolio: 881662, benchmark: 897000, pYield: -1.20, bYield: 0.1 },
+  { name: 'JUN', year: '2022', portfolio: 812011, benchmark: 822000, pYield: -7.90, bYield: -8.3 },
+  { name: 'JUL', year: '2022', portfolio: 863980, benchmark: 896000, pYield: 6.40, bYield: 9.1 },
+  { name: 'AGO', year: '2022', portfolio: 830284, benchmark: 858000, pYield: -3.90, bYield: -4.2 },
+  { name: 'SEP', year: '2022', portfolio: 762201, benchmark: 778000, pYield: -8.20, bYield: -9.3 },
+  { name: 'OCT', year: '2022', portfolio: 804884, benchmark: 840000, pYield: 5.60, bYield: 8.0 },
+  { name: 'NOV', year: '2022', portfolio: 830640, benchmark: 885000, pYield: 3.20, bYield: 5.4 },
+  { name: 'DIC', year: '2022', portfolio: 780000, benchmark: 832000, pYield: -6.10, bYield: -5.9 },
 ];
 
 const data2023 = [
-  { name: 'ENE', year: '2023', portfolio: 806520, benchmark: 883500, pYield: 3.4, bYield: 6.2 },
+  { name: 'ENE', year: '2023', portfolio: 806520, benchmark: 883500, pYield: 3.40, bYield: 6.2 },
   { name: 'FEB', year: '2023', portfolio: 829505, benchmark: 860500, pYield: 2.85, bYield: -2.6 },
-  { name: 'MAR', year: '2023', portfolio: 812086, benchmark: 890500, pYield: -2.1, bYield: 3.5 },
+  { name: 'MAR', year: '2023', portfolio: 812086, benchmark: 890500, pYield: -2.10, bYield: 3.5 },
   { name: 'ABR', year: '2023', portfolio: 846599, benchmark: 903800, pYield: 4.25, bYield: 1.5 },
-  { name: 'MAY', year: '2023', portfolio: 879617, benchmark: 906000, pYield: 3.9, bYield: 0.2 },
+  { name: 'MAY', year: '2023', portfolio: 879617, benchmark: 906000, pYield: 3.90, bYield: 0.2 },
   { name: 'JUN', year: '2023', portfolio: 903806, benchmark: 964800, pYield: 2.75, bYield: 6.5 },
   { name: 'JUL', year: '2023', portfolio: 888894, benchmark: 994700, pYield: -1.65, bYield: 3.1 },
-  { name: 'AGO', year: '2023', portfolio: 938672, benchmark: 977800, pYield: 5.6, bYield: -1.7 },
+  { name: 'AGO', year: '2023', portfolio: 938672, benchmark: 977800, pYield: 5.60, bYield: -1.7 },
   { name: 'SEP', year: '2023', portfolio: 910981, benchmark: 930100, pYield: -2.95, bYield: -4.9 },
-  { name: 'OCT', year: '2023', portfolio: 954708, benchmark: 909600, pYield: 4.8, bYield: -2.2 },
-  { name: 'NOV', year: '2023', portfolio: 974757, benchmark: 991400, pYield: 2.1, bYield: 9.0 },
+  { name: 'OCT', year: '2023', portfolio: 954708, benchmark: 909600, pYield: 4.80, bYield: -2.2 },
+  { name: 'NOV', year: '2023', portfolio: 974757, benchmark: 991400, pYield: 2.10, bYield: 9.0 },
   { name: 'DIC', year: '2023', portfolio: 992790, benchmark: 1035000, pYield: 1.85, bYield: 4.4 },
 ];
 
 const data2024 = [
-  { name: 'ENE', year: '2024', portfolio: 1023566, benchmark: 1052000, pYield: 3.1, bYield: 1.6 },
+  { name: 'ENE', year: '2024', portfolio: 1023566, benchmark: 1052000, pYield: 3.10, bYield: 1.6 },
   { name: 'FEB', year: '2024', portfolio: 1048644, benchmark: 1107000, pYield: 2.45, bYield: 5.2 },
-  { name: 'MAR', year: '2024', portfolio: 1029768, benchmark: 1141000, pYield: -1.8, bYield: 3.1 },
-  { name: 'ABR', year: '2024', portfolio: 1077137, benchmark: 1093000, pYield: 4.6, bYield: -4.2 },
-  { name: 'MAY', year: '2024', portfolio: 1133148, benchmark: 1146000, pYield: 5.2, bYield: 4.8 },
+  { name: 'MAR', year: '2024', portfolio: 1029768, benchmark: 1141000, pYield: -1.80, bYield: 3.1 },
+  { name: 'ABR', year: '2024', portfolio: 1077137, benchmark: 1093000, pYield: 4.60, bYield: -4.2 },
+  { name: 'MAY', year: '2024', portfolio: 1133148, benchmark: 1146000, pYield: 5.20, bYield: 4.8 },
   { name: 'JUN', year: '2024', portfolio: 1176774, benchmark: 1186000, pYield: 3.85, bYield: 3.5 },
-  { name: 'JUL', year: '2024', portfolio: 1149708, benchmark: 1198000, pYield: -2.3, bYield: 1.1 },
-  { name: 'AGO', year: '2024', portfolio: 1223290, benchmark: 1225000, pYield: 6.4, bYield: 2.3 },
-  { name: 'SEP', year: '2024', portfolio: 1258765, benchmark: 1251000, pYield: 2.9, bYield: 2.1 },
+  { name: 'JUL', year: '2024', portfolio: 1149708, benchmark: 1198000, pYield: -2.30, bYield: 1.1 },
+  { name: 'AGO', year: '2024', portfolio: 1223290, benchmark: 1225000, pYield: 6.40, bYield: 2.3 },
+  { name: 'SEP', year: '2024', portfolio: 1258765, benchmark: 1251000, pYield: 2.90, bYield: 2.1 },
   { name: 'OCT', year: '2024', portfolio: 1311004, benchmark: 1238000, pYield: 4.15, bYield: -1.0 },
   { name: 'NOV', year: '2024', portfolio: 1333946, benchmark: 1308000, pYield: 1.75, bYield: 5.7 },
   { name: 'DIC', year: '2024', portfolio: 1359958, benchmark: 1334000, pYield: 1.95, bYield: 2.0 },
@@ -70,7 +71,16 @@ const data2026 = [
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const item = payload[0].payload;
-    const colorCaishen = item.pYield >= 0 ? 'text-primary' : 'text-red-400';
+    
+    // Obtenemos el mes de forma numérica para consultar el rendimiento real
+    const monthNames = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    const monthIdx = monthNames.indexOf(item.name);
+    const yearNum = parseInt(item.year);
+    
+    // Obtenemos el rendimiento real almacenado o el histórico para que siempre sea preciso
+    const realYield = getStoredYield(yearNum, monthIdx) * 100;
+    
+    const colorCaishen = realYield >= 0 ? 'text-primary' : 'text-red-400';
     const colorSP500 = item.bYield >= 0 ? 'text-white' : 'text-red-400';
     
     return (
@@ -82,7 +92,7 @@ const CustomTooltip = ({ active, payload }: any) => {
           <div className="flex justify-between items-center gap-6">
             <span className="text-[11px] font-bold text-white/70 uppercase">CCG</span>
             <span className={`text-xs font-black ${colorCaishen}`}>
-              {item.pYield > 0 ? '+' : ''}{item.pYield}%
+              {realYield > 0 ? '+' : ''}{realYield.toFixed(2)}%
             </span>
           </div>
           <div className="flex justify-between items-center gap-6">
