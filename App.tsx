@@ -10,7 +10,7 @@ import Reports from './components/Reports/Reports';
 import Support from './components/Support/Support';
 import UserManagement from './components/UserManagement/UserManagement';
 import FinancialControl from './components/Admin/FinancialControl';
-import AuthGate from './components/Auth/AuthGate'; // Gating de seguridad
+import AuthGate from './components/Auth/AuthGate'; 
 import { supabase } from './lib/supabase';
 import { Cloud, CloudOff } from 'lucide-react';
 
@@ -21,12 +21,10 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
   const location = useLocation();
   const mainContentRef = useRef<HTMLElement>(null);
 
-  // RESET DE SCROLL AL CAMBIAR DE RUTA
   useEffect(() => {
     if (mainContentRef.current) {
       mainContentRef.current.scrollTo(0, 0);
     }
-    // Cerrar el menú lateral en móvil al navegar
     setIsSidebarOpen(false);
   }, [location.pathname]);
 
@@ -37,7 +35,7 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
     const testConnection = async () => {
       try {
         const { error } = await supabase.from('financial_config').select('id').limit(1);
-        setIsCloudConnected(true);
+        setIsCloudConnected(!error);
       } catch (e) {
         setIsCloudConnected(false);
       }
@@ -48,9 +46,10 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
   }, []);
 
   return (
-    <div key={key} className="flex h-screen bg-[#fcfcfc] overflow-hidden">
-      <div className="fixed bottom-6 right-6 z-[60] pointer-events-none">
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border bg-white shadow-premium animate-in fade-in slide-in-from-bottom-2 duration-1000 ${
+    <div key={key} className="flex h-screen bg-[#fcfcfc] overflow-hidden w-full">
+      {/* Cloud Status Indicator - Z-index adjusted */}
+      <div className="fixed bottom-6 right-6 z-[60] pointer-events-none hidden md:block">
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border bg-white shadow-premium ${
           isCloudConnected ? 'border-green-100 text-green-600' : 'border-orange-100 text-orange-400'
         }`}>
           {isCloudConnected ? <Cloud size={14} /> : <CloudOff size={14} />}
@@ -60,22 +59,24 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
         </div>
       </div>
 
+      {/* Sidebar Overlay for Mobile */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-accent/40 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[45] lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
       
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative">
         <Header title={title} onOpenMenu={() => setIsSidebarOpen(true)} />
+        
         <main 
           ref={mainContentRef}
-          className="flex-1 overflow-y-auto scroll-smooth"
+          className="flex-1 overflow-y-auto scroll-smooth relative z-10"
         >
-          <div className="max-w-[1600px] mx-auto pb-12">
+          <div className="max-w-[1600px] mx-auto pb-20 md:pb-12">
             {children}
           </div>
         </main>

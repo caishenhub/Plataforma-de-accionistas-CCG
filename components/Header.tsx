@@ -9,15 +9,15 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title, onOpenMenu }) => {
   return (
-    <header className="h-16 md:h-20 flex-shrink-0 border-b border-surface-border bg-white/90 backdrop-blur-xl sticky top-0 z-20 flex items-center justify-between px-4 md:px-8">
+    <header className="h-16 md:h-20 flex-shrink-0 border-b border-surface-border bg-white/80 backdrop-blur-md sticky top-0 z-[40] flex items-center justify-between px-4 md:px-8 w-full">
       <div className="flex items-center gap-3">
         <button 
           onClick={onOpenMenu}
-          className="lg:hidden p-3 -ml-1 hover:bg-gray-100 rounded-xl transition-colors active:scale-90 flex items-center justify-center"
+          className="lg:hidden p-3 -ml-1 hover:bg-gray-100 rounded-xl transition-colors active:scale-90 flex items-center justify-center text-accent"
           style={{ minWidth: '44px', minHeight: '44px' }}
           aria-label="Abrir menú"
         >
-          <Menu className="size-6 text-accent" />
+          <Menu className="size-6" />
         </button>
         
         <div className="flex flex-col leading-tight">
