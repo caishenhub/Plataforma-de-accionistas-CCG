@@ -31,42 +31,43 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeLabel, 
     : (variant === 'neon' ? 'bg-accent text-primary' : 'bg-primary text-accent');
 
   return (
-    <div className={`rounded-3xl p-7 border relative overflow-hidden group shadow-sm transition-all duration-300 hover:shadow-premium hover:-translate-y-1 ${containerClasses[variant]}`}>
-      <div className={`absolute -right-6 -top-6 p-4 transition-opacity duration-500 group-hover:opacity-20 ${iconClasses[variant]}`}>
+    <div className={`rounded-3xl p-5 md:p-7 border relative overflow-hidden group shadow-sm transition-all duration-300 hover:shadow-premium md:hover:-translate-y-1 ${containerClasses[variant]}`}>
+      {/* Oculto en móviles para maximizar el espacio para los datos clave */}
+      <div className={`absolute -right-6 -top-6 p-4 transition-opacity duration-500 group-hover:opacity-20 hidden md:block ${iconClasses[variant]}`}>
         {Icon && <Icon size={120} />}
       </div>
       
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>
-          <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-3 ${variant === 'dark' ? 'text-gray-400' : 'text-text-muted'}`}>
+          <p className={`text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] mb-2 ${variant === 'dark' ? 'text-gray-400' : 'text-text-muted'}`}>
             {title}
           </p>
-          <h3 className="text-4xl font-black tracking-tighter">
+          <h3 className="text-xl md:text-3xl lg:text-4xl font-black tracking-tighter truncate leading-tight">
             {value}
           </h3>
         </div>
         
-        <div className="mt-6">
+        <div className="mt-4 md:mt-6">
           {progress !== undefined ? (
-            <div className="space-y-3">
-              <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden border border-gray-50 shadow-inner">
+            <div className="space-y-2 md:space-y-3">
+              <div className="w-full bg-gray-100 rounded-full h-2.5 md:h-3 overflow-hidden border border-gray-50">
                 <div 
-                  className="bg-primary h-full rounded-full shadow-[0_0_12px_rgba(206,255,4,0.7)] transition-all duration-1000 ease-out" 
+                  className="bg-primary h-full rounded-full shadow-neon transition-all duration-1000 ease-out" 
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
-              {changeLabel && <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">{changeLabel}</p>}
+              {changeLabel && <p className="text-[8px] md:text-[9px] font-black text-text-muted uppercase tracking-widest">{changeLabel}</p>}
             </div>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {change && (
-                <span className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-extrabold shadow-sm ${badgeClasses}`}>
-                  {isNegative ? <TrendingDown size={12} /> : <TrendingUp size={12} />}
+                <span className={`flex items-center gap-1 px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg text-[9px] md:text-[10px] font-extrabold shadow-sm ${badgeClasses}`}>
+                  {isNegative ? <TrendingDown size={10} /> : <TrendingUp size={10} />}
                   {change}
                 </span>
               )}
               {changeLabel && (
-                <span className="text-[10px] font-bold text-text-muted tracking-tight">
+                <span className="text-[9px] md:text-[10px] font-bold text-text-muted tracking-tight">
                   {changeLabel}
                 </span>
               )}

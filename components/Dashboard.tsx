@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { Wallet, PiggyBank, ShieldCheck, Activity, Target, ArrowUpRight, Bitcoin, LineChart, TrendingUp, Calendar, ChevronDown, Repeat, BarChart3, Globe, Coins } from 'lucide-react';
+import { Wallet, PiggyBank, ShieldCheck, Activity, Target, ArrowUpRight, Bitcoin, TrendingUp, Calendar, Repeat, BarChart3, Globe, Coins } from 'lucide-react';
 import StatCard from './StatCard';
 import PerformanceChart from './Charts/PerformanceChart';
 import AllocationPieChart from './Charts/AllocationPieChart';
@@ -62,19 +62,16 @@ const Dashboard: React.FC = () => {
     return FINANCE_CONFIG.RESERVE_GOAL_PCT;
   }, [selectedPeriod]);
 
-  // Datos extendidos para Transacciones - Ajustado: Dispersión de Diciembre se realiza en Enero
   const transactions = [
-    { id: 'tx1', type: 'dividend', amount: 31450.20, date: '05 Ene, 2026', desc: 'DISPERSIÓN DIVIDENDOS ANUALES (41.77%)', status: 'Finalizado' },
-    { id: 'tx2', type: 'rebalance', amount: 12400.00, date: '10 Dic, 2025', desc: 'Ajuste Portafolio Derivados T4', status: 'Completado' },
-    { id: 'tx3', type: 'audit', amount: 0, date: '05 Dic, 2025', desc: 'Certificación de Activos', status: 'Verificado' },
-    { id: 'tx4', type: 'injection', amount: 45000.00, date: '28 Nov, 2025', desc: 'Inyección Capital Institucional Grupo A', status: 'Completado' },
+    { id: 'tx1', type: 'dividend', amount: 31450.20, date: '05 Ene, 2026', desc: 'DISPERSIÓN DIVIDENDOS (41.77%)', status: 'Finalizado' },
+    { id: 'tx2', type: 'rebalance', amount: 12400.00, date: '10 Dic, 2025', desc: 'Ajuste Derivados T4', status: 'Completado' },
+    { id: 'tx3', type: 'audit', amount: 0, date: '05 Dic, 2025', desc: 'Certificación Activos', status: 'Verificado' },
   ];
 
   const marketWatch = [
-    { id: 'w1', name: 'S&P 500 Index', symbol: 'SPX', price: '5,982.10', change: '+1.45%', trend: [40, 60, 55, 80, 95], color: '#1d1c2d', pos: true },
-    { id: 'w2', name: 'Gold (Spot)', symbol: 'XAU/USD', price: '2,645.40', change: '+0.82%', trend: [70, 65, 80, 75, 90], color: '#D4AF37', pos: true },
-    { id: 'w3', name: 'Bitcoin', symbol: 'BTC', price: '96,240.00', change: '-2.15%', trend: [95, 80, 70, 60, 50], color: '#f7931a', pos: false },
-    { id: 'w4', name: 'EUR / USD', symbol: 'Forex', price: '1.0845', change: '+0.12%', trend: [30, 35, 32, 40, 42], color: '#3b82f6', pos: true },
+    { id: 'w1', name: 'S&P 500 Index', symbol: 'SPX', price: '5,982.10', change: '+1.45%', color: '#1d1c2d', pos: true },
+    { id: 'w2', name: 'Gold (Spot)', symbol: 'XAU/USD', price: '2,645.40', change: '+0.82%', color: '#D4AF37', pos: true },
+    { id: 'w3', name: 'Bitcoin', symbol: 'BTC', price: '96,240.00', change: '-2.15%', color: '#f7931a', pos: false },
   ];
 
   const getTxStyles = (type: string) => {
@@ -87,21 +84,21 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-6 md:space-y-8 animate-in fade-in duration-700">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8 animate-in fade-in duration-700 max-w-full overflow-x-hidden">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-accent text-2xl md:text-4xl font-black tracking-tighter mb-1 uppercase">Panel de Control</h1>
+          <h1 className="text-accent text-2xl md:text-4xl font-black tracking-tighter uppercase leading-tight mb-1">Panel de Control</h1>
           <p className="text-text-secondary text-[11px] md:text-base font-medium">Estado consolidado al {currentDate}.</p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-surface-border shadow-sm">
-          <span className="pl-3 text-[10px] font-black text-text-muted uppercase tracking-widest">Periodo:</span>
-          <div className="flex gap-1">
+        <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-surface-border shadow-sm overflow-x-auto hide-scrollbar max-w-full">
+          <span className="shrink-0 pl-2 text-[9px] font-black text-text-muted uppercase tracking-widest">Periodo:</span>
+          <div className="flex gap-1 shrink-0">
             {['General', 2022, 2023, 2024, 2025, 2026].map((p) => (
               <button
                 key={p}
                 onClick={() => setSelectedPeriod(p as any)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black transition-all uppercase tracking-tight ${
+                className={`px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-[10px] font-black transition-all uppercase tracking-tight whitespace-nowrap ${
                   selectedPeriod === p ? 'bg-accent text-primary shadow-md' : 'text-text-muted hover:bg-gray-50'
                 }`}
               >
@@ -112,7 +109,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <StatCard 
           title={selectedPeriod === 'General' ? "BALANCE ACTUAL (AUM)" : `AUM CIERRE ${selectedPeriod}`} 
           value={`$${metrics.aum.toLocaleString('en-US', { minimumFractionDigits: 2 })}`} 
@@ -135,29 +132,29 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 bg-white rounded-3xl p-5 md:p-8 border border-surface-border shadow-sm overflow-hidden">
-          <div className="flex items-center gap-4 mb-6 md:mb-8">
-            <div className="p-3 bg-surface-subtle rounded-2xl">
-              <Activity className="size-5 text-accent" />
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <div className="p-2.5 bg-surface-subtle rounded-xl">
+              <Activity className="size-4 text-accent" />
             </div>
             <div>
-              <h3 className="text-accent text-lg md:text-xl font-extrabold tracking-tight">Evolución del Portafolio</h3>
-              <p className="text-text-muted text-[10px] font-medium uppercase tracking-widest">Desempeño Multi-Anual Consolidado</p>
+              <h3 className="text-accent text-base md:text-xl font-extrabold tracking-tight">Evolución del Portafolio</h3>
+              <p className="text-text-muted text-[8px] font-medium uppercase tracking-widest">Desempeño consolidado</p>
             </div>
           </div>
-          <div className="h-[280px] md:h-[350px] w-full">
+          <div className="h-[240px] md:h-[350px] w-full">
             <PerformanceChart initialYear={selectedPeriod} />
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 md:p-8 border border-surface-border shadow-sm flex flex-col items-center justify-center">
-          <div className="flex items-center gap-4 mb-6 md:mb-8 w-full">
-            <div className="p-3 bg-primary/10 rounded-2xl">
-              <Target className="size-5 text-accent" />
+        <div className="bg-white rounded-3xl p-6 md:p-8 border border-surface-border shadow-sm flex flex-col items-center justify-center">
+          <div className="flex items-center gap-3 mb-6 w-full">
+            <div className="p-2.5 bg-primary/10 rounded-xl">
+              <Target className="size-4 text-accent" />
             </div>
-            <h3 className="text-accent text-lg font-extrabold tracking-tight">Composición</h3>
+            <h3 className="text-accent text-base font-extrabold tracking-tight uppercase">Composición</h3>
           </div>
           <AllocationPieChart />
-          <div className="mt-6 md:mt-8 grid grid-cols-2 gap-x-4 md:gap-x-8 gap-y-3 w-full px-2">
+          <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 w-full px-2">
             {[
               { label: 'Forex', color: 'bg-accent', val: '20.6%' },
               { label: 'Derivados', color: 'bg-[#D4AF37]', val: '30.9%' },
@@ -165,46 +162,46 @@ const Dashboard: React.FC = () => {
               { label: 'Real Estate', color: 'bg-primary', val: '25.8%' },
             ].map((item) => (
               <div key={item.label} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className={`size-2 rounded-full ${item.color}`}></div>
-                  <span className="text-[9px] md:text-[10px] font-bold text-text-secondary">{item.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <div className={`size-1.5 rounded-full ${item.color}`}></div>
+                  <span className="text-[9px] font-bold text-text-secondary">{item.label}</span>
                 </div>
-                <span className="text-[9px] md:text-[10px] font-black text-accent">{item.val}</span>
+                <span className="text-[9px] font-black text-accent">{item.val}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-[32px] border border-surface-border shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 flex justify-between items-center border-b border-gray-100 bg-surface-subtle/30">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white rounded-xl shadow-sm"><BarChart3 size={18} className="text-accent" /></div>
-              <h3 className="text-accent text-lg font-extrabold tracking-tight uppercase">Transacciones Recientes</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
+        <div className="bg-white rounded-[24px] border border-surface-border shadow-sm overflow-hidden flex flex-col">
+          <div className="p-5 flex justify-between items-center border-b border-gray-50 bg-surface-subtle/30">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 bg-white rounded-lg shadow-sm"><BarChart3 size={14} className="text-accent" /></div>
+              <h3 className="text-accent text-xs font-black tracking-tight uppercase">Transacciones</h3>
             </div>
           </div>
-          <div className="flex-1 divide-y divide-gray-100">
+          <div className="flex-1 divide-y divide-gray-50 overflow-x-auto hide-scrollbar">
             {transactions.map((tx) => {
               const style = getTxStyles(tx.type);
               return (
-                <div key={tx.id} className="px-6 py-5 flex items-center justify-between hover:bg-gray-50/50 transition-colors group">
-                  <div className="flex items-center gap-4 overflow-hidden">
-                    <div className={`p-3 rounded-2xl ${style.bg} ${style.text} shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                <div key={tx.id} className="px-5 py-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors group min-w-[280px]">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className={`p-2 rounded-xl ${style.bg} ${style.text} shrink-0 shadow-sm`}>
                       {style.icon}
                     </div>
                     <div className="truncate">
-                      <p className="text-xs font-black text-accent truncate uppercase tracking-tight">{tx.desc}</p>
-                      <p className="text-[10px] font-bold text-text-muted flex items-center gap-2">
-                        <Calendar size={10} /> {tx.date} • <span className="text-primary-hover">{tx.status}</span>
+                      <p className="text-[10px] font-black text-accent truncate uppercase">{tx.desc}</p>
+                      <p className="text-[8px] font-bold text-text-muted flex items-center gap-1">
+                        <Calendar size={10} /> {tx.date}
                       </p>
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-4">
-                    <p className={`text-sm font-black ${tx.amount > 0 ? 'text-accent' : 'text-text-muted'}`}>
-                      {tx.amount > 0 ? `$${tx.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '--'}
+                    <p className={`text-xs font-black ${tx.amount > 0 ? 'text-accent' : 'text-text-muted'}`}>
+                      {tx.amount > 0 ? `$${tx.amount.toLocaleString('en-US')}` : '--'}
                     </p>
-                    <p className="text-[9px] font-black text-text-muted uppercase tracking-widest">USD</p>
+                    <p className="text-[8px] font-black text-text-muted uppercase tracking-tighter">USD</p>
                   </div>
                 </div>
               );
@@ -212,37 +209,30 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[32px] border border-surface-border shadow-sm p-6 flex flex-col">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent rounded-xl shadow-sm text-primary"><Globe size={18} /></div>
-              <h3 className="text-accent text-lg font-extrabold tracking-tight uppercase">Referencias del Mercado</h3>
+        <div className="bg-white rounded-[24px] border border-surface-border shadow-sm p-5 flex flex-col">
+          <div className="flex justify-between items-center mb-5">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 bg-accent rounded-lg shadow-sm text-primary"><Globe size={14} /></div>
+              <h3 className="text-accent text-xs font-black tracking-tight uppercase">Mercado</h3>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {marketWatch.map((item) => (
-              <div key={item.id} className="p-4 rounded-2xl border border-gray-100 flex items-center justify-between hover:border-primary/40 transition-all group cursor-default">
-                <div className="flex items-center gap-4">
-                  <div className="size-10 rounded-xl flex items-center justify-center text-white shadow-sm" style={{ backgroundColor: item.color }}>
-                    {item.symbol === 'BTC' ? <Bitcoin size={20} /> : item.symbol === 'SPX' ? <TrendingUp size={20} /> : <Coins size={20} />}
+              <div key={item.id} className="p-3 rounded-xl border border-gray-100 flex items-center justify-between transition-all group cursor-default">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-lg flex items-center justify-center text-white shadow-sm shrink-0" style={{ backgroundColor: item.color }}>
+                    {item.symbol === 'BTC' ? <Bitcoin size={16} /> : item.symbol === 'SPX' ? <TrendingUp size={16} /> : <Coins size={16} />}
                   </div>
                   <div>
-                    <p className="text-xs font-black text-accent">{item.name}</p>
-                    <p className="text-[10px] font-bold text-text-muted uppercase tracking-tighter">{item.symbol}</p>
+                    <p className="text-[10px] font-black text-accent leading-none">{item.name}</p>
+                    <p className="text-[8px] font-bold text-text-muted uppercase mt-1">{item.symbol}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-6">
-                  <div className="hidden sm:flex items-end gap-1 h-8">
-                    {item.trend.map((h, i) => (
-                      <div key={i} className={`w-1 rounded-full ${item.pos ? 'bg-green-500/20 group-hover:bg-green-500' : 'bg-red-500/20 group-hover:bg-red-500'} transition-all`} style={{ height: `${h}%` }}></div>
-                    ))}
-                  </div>
-                  <div className="text-right min-w-[80px]">
-                    <p className="text-xs font-black text-accent">{item.price}</p>
-                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-lg ${item.pos ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
-                      {item.change}
-                    </span>
-                  </div>
+                <div className="text-right min-w-[70px]">
+                  <p className="text-[10px] font-black text-accent leading-none">{item.price}</p>
+                  <span className={`text-[8px] font-black px-1 py-0.5 rounded-md mt-1 inline-block ${item.pos ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
+                    {item.change}
+                  </span>
                 </div>
               </div>
             ))}
