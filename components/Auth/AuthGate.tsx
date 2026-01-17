@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Lock, ShieldCheck, AlertCircle, X, ChevronRight } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle, X, ChevronRight, UserPlus } from 'lucide-react';
 
 const MOCK_USERS = [
   { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', pin: '8888' },
@@ -99,6 +99,10 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setShowPinModal(true);
   };
 
+  const handleRegisterRedirect = () => {
+    window.open('https://registro-caishen-capital-group.vercel.app/', '_blank');
+  };
+
   if (isLoading) return null;
 
   if (isAuthenticated) return <>{children}</>;
@@ -109,7 +113,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       style={{ backgroundImage: "url('https://i.ibb.co/HL7RGf9F/Chat-GPT-Image-8-ene-2026-10-46-40-p-m.png')" }}
     >
       <div className="absolute inset-0 bg-accent/40" />
-      <div className="relative w-full max-w-md bg-white rounded-[40px] shadow-premium border border-white/20 p-10 space-y-10 animate-in fade-in zoom-in-95 duration-700">
+      <div className="relative w-full max-w-md bg-white rounded-[40px] shadow-premium border border-white/20 p-8 md:p-10 space-y-8 md:space-y-10 animate-in fade-in zoom-in-95 duration-700">
         <div className="flex flex-col items-center text-center space-y-6">
           <img 
             src="https://i.ibb.co/zT3RhhT9/CAISHEN-NO-FONDO-AZUL-1.png" 
@@ -143,6 +147,20 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ChevronRight size={18} />
           </button>
         </form>
+
+        <div className="pt-2 border-t border-surface-border">
+          <div className="flex flex-col items-center text-center space-y-4">
+            <p className="text-[11px] font-bold text-text-muted uppercase tracking-tight">¿Aún no eres parte de Caishen Capital?</p>
+            <button 
+              onClick={handleRegisterRedirect}
+              className="group flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary/10 border border-primary/20 hover:bg-primary transition-all duration-300"
+            >
+              <UserPlus size={16} className="text-accent group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-black text-accent uppercase tracking-widest">Solicitar Registro</span>
+            </button>
+          </div>
+        </div>
+
         <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-text-muted uppercase tracking-widest">
           <ShieldCheck size={14} className="text-primary" />
           Conexión Encriptada de 256-bits
