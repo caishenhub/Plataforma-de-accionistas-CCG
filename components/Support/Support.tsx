@@ -5,7 +5,8 @@ import {
   Video, 
   MessageSquare, 
   ChevronDown, 
-  Send, 
+  Copy, 
+  Check,
   Calendar, 
   HelpCircle,
   Headset,
@@ -34,16 +35,23 @@ const FAQS = [
 
 const Support: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const SUPPORT_EMAIL = 'contacto@caishencapital.co';
   const BOOKING_LINK = 'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0_P4feGatgrX4EH0X_qvIhMq0x9xlJrMgKjzEtmL68QLkThUUQ-ZtvuTahld3jz1bLW-hfkJEv';
   const WHATSAPP_LINK = 'https://api.whatsapp.com/message/ZDXZP24WMRQRO1?autoload=1&app_absent=0';
 
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(SUPPORT_EMAIL);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="p-8 lg:p-12 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-7xl mx-auto">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-accent text-4xl lg:text-5xl font-black tracking-tighter">Contactar Soporte</h1>
+        <h1 className="text-accent text-4xl lg:text-5xl font-black tracking-tighter uppercase">Contactar Soporte</h1>
         <p className="text-text-secondary text-lg font-medium">Estamos aquí para resolver tus dudas y ayudarte con tus inversiones.</p>
       </div>
 
@@ -51,7 +59,7 @@ const Support: React.FC = () => {
         {/* Left Column (Main Actions & FAQ) */}
         <div className="lg:col-span-2 space-y-8">
           
-          {/* Email Contact Card */}
+          {/* Email Contact Card - Updated to Copy Functionality */}
           <div className="bg-white rounded-3xl p-8 lg:p-10 border-2 border-primary shadow-xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
               <Mail size={160} className="text-accent" />
@@ -62,25 +70,29 @@ const Support: React.FC = () => {
                 <div className="bg-primary p-3 rounded-2xl text-accent shadow-sm">
                   <Mail size={24} />
                 </div>
-                <h2 className="text-2xl font-black text-accent tracking-tight">Contacto por Correo Electrónico</h2>
+                <h2 className="text-2xl font-black text-accent tracking-tight">Contacto por Correo</h2>
               </div>
               
               <p className="text-text-secondary text-base font-medium max-w-lg leading-relaxed">
-                Envíanos un correo directo para consultas detalladas o adjuntar documentación. Nuestro equipo responderá en menos de 24 horas.
+                Copia nuestro correo oficial para consultas detalladas o adjuntar documentación. Responderemos en menos de 24 horas.
               </p>
               
-              <div className="bg-surface-subtle rounded-2xl p-4 border border-surface-border flex items-center gap-3 w-fit group/email">
+              <div className="bg-surface-subtle rounded-2xl p-4 border border-surface-border flex items-center gap-3 w-fit group/email transition-colors hover:border-primary">
                 <AtSign size={18} className="text-text-muted group-hover/email:text-accent transition-colors" />
                 <span className="text-accent font-bold text-sm select-all">{SUPPORT_EMAIL}</span>
               </div>
               
-              <a 
-                href={`mailto:${SUPPORT_EMAIL}`}
-                className="inline-flex items-center gap-3 bg-primary hover:bg-primary-hover text-accent font-black py-4 px-10 rounded-2xl transition-all shadow-md hover:-translate-y-1 active:scale-95 uppercase text-xs tracking-widest"
+              <button 
+                onClick={handleCopyEmail}
+                className={`inline-flex items-center gap-3 font-black py-4 px-10 rounded-2xl transition-all shadow-md active:scale-95 uppercase text-xs tracking-widest ${
+                  copied 
+                  ? 'bg-accent text-primary' 
+                  : 'bg-primary hover:bg-primary-hover text-accent hover:-translate-y-1'
+                }`}
               >
-                <span>Enviar Correo</span>
-                <Send size={18} />
-              </a>
+                <span>{copied ? '¡Correo Copiado!' : 'Copiar Correo'}</span>
+                {copied ? <Check size={18} className="animate-in zoom-in" /> : <Copy size={18} />}
+              </button>
             </div>
           </div>
 
