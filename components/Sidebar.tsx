@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   PieChart, 
@@ -20,11 +20,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
 
   const handleExit = () => {
+    // 1. Limpiamos la sesión del almacenamiento local
     localStorage.removeItem('ccg_session');
-    window.location.assign("https://www.caishencapital.co");
+    
+    // 2. Cerramos el menú lateral si está abierto (en móviles)
+    if (onClose) onClose();
+    
+    // 3. Redirigimos a la raíz y forzamos recarga para que AuthGate tome el control
+    window.location.href = window.location.origin + window.location.pathname;
   };
 
   const menuItems = [
@@ -40,13 +47,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       fixed inset-y-0 left-0 z-50 w-[80%] sm:w-72 bg-white border-r border-surface-border flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
       ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
     `}>
-      <div className="p-6 md:p-8 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <h1 className="text-accent text-lg md:text-xl font-extrabold tracking-tighter uppercase">Caishen Capital</h1>
+      <div className="p-6 md:p-8 flex justify-between items-center overflow-visible">
+        <div className="flex items-center pr-2">
+          <h1 className="text-accent text-sm md:text-base font-black tracking-tighter uppercase leading-tight">
+            Caishen Capital Group
+          </h1>
         </div>
         <button 
           onClick={onClose} 
-          className="lg:hidden p-2 text-text-muted hover:text-accent rounded-full hover:bg-gray-100 flex items-center justify-center"
+          className="lg:hidden p-2 text-text-muted hover:text-accent rounded-full hover:bg-gray-100 flex items-center justify-center shrink-0"
           style={{ minWidth: '40px', minHeight: '40px' }}
         >
           <X size={24} />
