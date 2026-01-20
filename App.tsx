@@ -11,6 +11,7 @@ import Support from './components/Support/Support';
 import UserManagement from './components/UserManagement/UserManagement';
 import FinancialControl from './components/Admin/FinancialControl';
 import AuthGate from './components/Auth/AuthGate'; 
+import MobileNav from './components/MobileNav';
 import { supabase } from './lib/supabase';
 import { Cloud, CloudOff } from 'lucide-react';
 
@@ -34,8 +35,6 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
     
     const testConnection = async () => {
       try {
-        // Forzamos el estado activo si el cliente de supabase está definido
-        // Esto activará el mensaje "Cloud Sync Active" visualmente
         if (supabase) {
           setIsCloudConnected(true);
         } else {
@@ -53,26 +52,19 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
 
   return (
     <div key={key} className="flex h-screen bg-[#fcfcfc] overflow-hidden w-full">
-      {/* Cloud Status Indicator - Z-index adjusted */}
-      <div className="fixed bottom-6 right-6 z-[60] pointer-events-none hidden md:block">
+      {/* Cloud Status Indicator */}
+      <div className="fixed bottom-20 md:bottom-6 right-6 z-[60] pointer-events-none hidden xs:block">
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border bg-white shadow-premium transition-all duration-500 ${
           isCloudConnected ? 'border-green-100 text-green-600' : 'border-orange-100 text-orange-400'
         }`}>
           {isCloudConnected ? <Cloud size={14} className="animate-pulse" /> : <CloudOff size={14} />}
           <span className="text-[9px] font-black uppercase tracking-widest">
-            {isCloudConnected ? 'Cloud Sync Active' : 'Offline Mode'}
+            {isCloudConnected ? 'Cloud Sync' : 'Offline'}
           </span>
         </div>
       </div>
 
-      {/* Sidebar Overlay for Mobile */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-accent/60 backdrop-blur-sm z-[45] lg:hidden animate-in fade-in duration-300"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-      
+      {/* Sidebar - Solo visible en Escritorio */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
       <div className="flex-1 flex flex-col min-w-0 h-full relative">
@@ -82,10 +74,14 @@ const Layout: React.FC<{ children: React.ReactNode, title: string }> = ({ childr
           ref={mainContentRef}
           className="flex-1 overflow-y-auto scroll-smooth relative z-10"
         >
-          <div className="max-w-[1600px] mx-auto pb-20 md:pb-12">
+          {/* Ajuste de padding inferior para la MobileNav */}
+          <div className="max-w-[1600px] mx-auto pb-24 md:pb-12">
             {children}
           </div>
         </main>
+
+        {/* Navegación inferior para móviles */}
+        <MobileNav />
       </div>
     </div>
   );
