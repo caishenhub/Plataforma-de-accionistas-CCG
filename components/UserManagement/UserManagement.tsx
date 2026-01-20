@@ -8,7 +8,8 @@ import {
   Mail, 
   Lock, 
   X, 
-  AlertCircle
+  AlertCircle,
+  PlusCircle
 } from 'lucide-react';
 import ShareholderProfile from './ShareholderProfile';
 
@@ -90,16 +91,33 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleRequestShares = () => {
+    window.open('https://caishencapital.co/producto/acciones-minoritarias/', '_blank');
+  };
+
   if (selectedUser) {
     return <ShareholderProfile user={selectedUser} onBack={() => setSelectedUser(null)} />;
   }
 
   return (
     <div className="p-8 lg:p-10 space-y-8 animate-in fade-in duration-700">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h2 className="text-3xl font-black text-accent tracking-tighter uppercase">Gestión de Accionistas</h2>
-          <p className="text-text-secondary mt-1 text-sm font-medium">Panel de control administrativo y supervisión de perfiles institucionales.</p>
+      <header className="flex flex-col md:flex-row md:items-start justify-between gap-6 border-b border-surface-border pb-8">
+        <div className="space-y-1">
+          <h2 className="text-3xl md:text-4xl font-black text-accent tracking-tighter uppercase leading-none">Gestión de Accionistas</h2>
+          <p className="text-text-secondary text-sm md:text-base font-medium">Panel de control administrativo y supervisión de perfiles institucionales.</p>
+        </div>
+
+        <div className="flex flex-col items-center md:items-end gap-3 self-center md:self-start">
+          <button 
+            onClick={handleRequestShares}
+            className="group flex items-center gap-3 bg-primary hover:bg-primary-hover text-accent font-black px-10 py-4 rounded-2xl transition-all shadow-premium hover:-translate-y-1 active:scale-95 uppercase text-xs tracking-widest"
+          >
+            <PlusCircle size={20} className="transition-transform group-hover:rotate-90" />
+            SOLICITAR ACCIONES
+          </button>
+          <p className="text-[10px] text-text-muted font-bold uppercase tracking-tight text-center md:text-right max-w-[280px] leading-relaxed opacity-80">
+            La solicitud de acciones está sujeta a revisión y validación conforme a los lineamientos internos de la compañía.
+          </p>
         </div>
       </header>
 
