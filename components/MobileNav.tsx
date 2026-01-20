@@ -5,7 +5,6 @@ import {
   LayoutDashboard, 
   PieChart, 
   TrendingUp, 
-  FileText, 
   Users,
   Headset
 } from 'lucide-react';
@@ -14,10 +13,11 @@ const MobileNav: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
+  // Reordenamiento solicitado: Portafolio a la izquierda, Inicio al centro
   const navItems = [
-    { name: 'Inicio', path: '/', icon: LayoutDashboard },
+    { name: 'Portafolio', path: '/portfolio', icon: PieChart },
     { name: 'Socios', path: '/users', icon: Users },
-    { name: 'Portafolio', path: '/portfolio', icon: PieChart, central: true },
+    { name: 'Inicio', path: '/', icon: LayoutDashboard, central: true },
     { name: 'Resumen', path: '/summary', icon: TrendingUp },
     { name: 'Ayuda', path: '/support', icon: Headset },
   ];
@@ -52,7 +52,7 @@ const MobileNav: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
-              className="flex flex-col items-center justify-center flex-1 h-full gap-1 group"
+              className="flex flex-col items-center justify-center flex-1 h-full gap-1 group relative"
             >
               <div className={`p-1 transition-all duration-300 ${active ? 'text-primary' : 'text-text-muted group-active:scale-90'}`}>
                 <Icon size={20} strokeWidth={active ? 3 : 2} className={active ? 'drop-shadow-[0_0_8px_rgba(206,255,4,0.5)]' : ''} />
