@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FileText, ShieldAlert, Zap, Gavel, Calendar, ArrowRight } from 'lucide-react';
+import { FileText, ShieldAlert, Zap, Gavel, Calendar, ArrowRight, Shield } from 'lucide-react';
 import { Report } from '../../types';
 
 interface ReportCardProps {
@@ -17,6 +17,13 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onView }) => {
           icon: <FileText className="size-8" />,
           hoverBg: 'group-hover:bg-blue-50',
           titleHover: 'group-hover:text-blue-900'
+        };
+      case 'Riesgos y Mitigación':
+        return { 
+          badge: 'bg-red-50 text-red-700 border-red-100', 
+          icon: <Shield className="size-8" />,
+          hoverBg: 'group-hover:bg-red-50',
+          titleHover: 'group-hover:text-red-900'
         };
       case 'Auditoría':
         return { 
@@ -65,7 +72,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onView }) => {
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-4">
             <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${styles.badge}`}>
-              {report.category}
+              {report.category === 'Riesgos y Mitigación' ? 'RIESGOS' : report.category}
             </span>
             <div className="flex items-center gap-1.5 text-text-muted text-[10px] font-bold">
               <Calendar size={12} />

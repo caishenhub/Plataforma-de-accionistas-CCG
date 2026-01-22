@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
@@ -21,9 +22,8 @@ interface ShareholderProfileProps {
 }
 
 const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack }) => {
-  // Filtro especial para Juan Andres Suarez (#USR-008) y accionistas de 20 acciones
+  // Filtro exclusivo para Juan Andres Suarez (#USR-008)
   const isJuanAndres = user.uid === '#USR-008';
-  const has20Shares = user.shares === 20;
   
   // Mes de ingreso: 8 para Juan Andres (Septiembre)
   const joinMonth = isJuanAndres ? 8 : 0;
@@ -31,20 +31,22 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
   const [selectedYear, setSelectedYear] = useState(2025);
   const [updateKey, setUpdateKey] = useState(0);
   
-  // Calculamos finanzas inyectando el mes de ingreso
+  // Calculamos finanzas inyectando los datos específicos autorizados para el usuario #USR-008
   const finances = useMemo(() => {
     const baseFinances = calculateUserFinance(user.shares, selectedYear, joinMonth);
     
-    // Si es el accionista de 20 acciones, forzamos los valores reales solicitados
-    if (has20Shares && selectedYear === 2025) {
+    // Aplicación de parámetros autorizados para Juan Andres Suarez en 2025
+    if (isJuanAndres && selectedYear === 2025) {
       return {
         ...baseFinances,
-        annualYieldPct: 11.58, // Suma simple 2.85+3.10+2.95+2.68
-        annualProfit: 576.33,   // Suma 141.84+154.29+146.82+133.38
+        participation: '4.00%',
+        balance: 4977.00, // Capital base fijo autorizado
+        annualYieldPct: 9.13, // ROI 2025 (%) = (454.40 / 4,977.00) * 100
+        annualProfit: 454.40, // Suma: 114.47 + 108.50 + 119.45 + 111.98
       };
     }
     return baseFinances;
-  }, [user.shares, selectedYear, updateKey, joinMonth, has20Shares]);
+  }, [user.shares, selectedYear, updateKey, joinMonth, isJuanAndres]);
   
   const isAdmin = user.uid === '#ADM-001';
 
@@ -56,12 +58,12 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
 
   const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-  // Datos reales para el accionista de 20 acciones (Septiembre a Diciembre 2025)
-  const realData20Shares = [
-    { pct: 2.85, usd: 141.84 }, // Septiembre (idx 8)
-    { pct: 3.10, usd: 154.29 }, // Octubre (idx 9)
-    { pct: 2.95, usd: 146.82 }, // Noviembre (idx 10)
-    { pct: 2.68, usd: 133.38 }  // Diciembre (idx 11)
+  // Datos específicos autorizados para el último cuatrimestre 2025 (#USR-008)
+  const realDataJuanAndres = [
+    { pct: 2.30, usd: 114.47 }, // Septiembre (idx 8)
+    { pct: 2.18, usd: 108.50 }, // Octubre (idx 9)
+    { pct: 2.40, usd: 119.45 }, // Noviembre (idx 10)
+    { pct: 2.25, usd: 111.98 }  // Diciembre (idx 11)
   ];
 
   const availableYears = isJuanAndres ? [2025, 2026] : [2023, 2024, 2025, 2026];
@@ -151,9 +153,9 @@ const ShareholderProfile: React.FC<ShareholderProfileProps> = ({ user, onBack })
                   let displayProfit: number;
                   const status = getPayoutStatus(selectedYear, idx);
 
-                  // Lógica para accionista de 20 acciones en 2025
-                  if (has20Shares && selectedYear === 2025 && idx >= 8 && idx <= 11) {
-                    const realValues = realData20Shares[idx - 8];
+                  // Lógica específica para Juan Andres Suarez en 2025
+                  if (isJuanAndres && selectedYear === 2025 && idx >= 8 && idx <= 11) {
+                    const realValues = realDataJuanAndres[idx - 8];
                     displayYield = realValues.pct / 100;
                     displayProfit = realValues.usd;
                   } else {

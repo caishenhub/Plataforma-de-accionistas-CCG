@@ -19,13 +19,20 @@ export interface Transaction {
   description: string;
 }
 
+export interface ReportSection {
+  title: string;
+  content: string;
+  items?: string[];
+}
+
 export interface Report {
   id: string;
   title: string;
   date: string;
   category: 'Mensual' | 'Trimestral' | 'Auditoría' | 'Estrategia' | 'Normativa' | 'Resumen Ejecutivo' | 'Riesgos y Mitigación';
   summary: string;
-  content?: string;
+  highlight?: string;
+  sections?: ReportSection[];
 }
 
 export interface CorporateNotice {

@@ -67,15 +67,10 @@ export const FINANCE_CONFIG = {
   RESERVE_GOAL_PCT: 100
 };
 
-/**
- * Calcula las finanzas individuales considerando el mes de ingreso (joinMonth)
- * para el cálculo de rendimientos acumulados que le corresponden legalmente.
- */
 export const calculateUserFinance = (shares: number, year: number = 2025, joinMonth: number = 0) => {
   const participation = shares / FINANCE_CONFIG.TOTAL_SHARES;
   const yearsList = [2022, 2023, 2024, 2025, 2026];
   
-  // 1. Calcular el balance actual (basado en el valor de la acción hoy)
   let currentFactor = 1;
   for (const y of yearsList) {
     const history = FINANCIAL_HISTORY[y] || [];
@@ -86,12 +81,9 @@ export const calculateUserFinance = (shares: number, year: number = 2025, joinMo
   }
   const balance = shares * (BASE_VALUE_PER_SHARE * currentFactor);
 
-  // 2. Calcular rendimiento anual INDIVIDUAL (ventana de elegibilidad)
   const history = FINANCIAL_HISTORY[year] || [];
   let individualAnnualFactor = 1;
   
-  // Solo iteramos desde el mes de ingreso si es el año de ingreso o posterior
-  // (Nota: Si el año seleccionado es anterior al ingreso, el rendimiento es 0)
   history.forEach((_, idx) => {
     if (idx >= joinMonth) {
       individualAnnualFactor *= (1 + getStoredYield(year, idx));
@@ -104,7 +96,7 @@ export const calculateUserFinance = (shares: number, year: number = 2025, joinMo
     participation: (participation * 100).toFixed(2) + '%',
     balance: balance,
     annualProfit: balance * annualYieldPct,
-    annualYieldPct: annualYieldPct * 100, // Porcentaje real del usuario
+    annualYieldPct: annualYieldPct * 100, 
     monthlyProfit: balance * (history[11] / 100 || 0)
   };
 };
@@ -150,7 +142,66 @@ export const MOCK_WATCHLIST = [
 ];
 
 export const MOCK_REPORTS: Report[] = [
-  { id: 'rep1', title: 'Informe de Gestión Diciembre 2025', date: '15 Dic, 2025', category: 'Mensual', summary: 'Rendimiento anual consolidado del 41.77%.' }
+  { 
+    id: 'rep-risk-jan26', 
+    title: 'Reporte de Riesgo y Mitigación – Enero 2026', 
+    date: '22 Ene, 2026', 
+    category: 'Riesgos y Mitigación', 
+    summary: 'Actualización institucional sobre exposición en activos refugio, evaluación de riesgo y medidas de mitigación aplicadas.',
+    highlight: 'Estado general de riesgos: Controlado, bajo vigilancia activa del Comité Técnico.',
+    sections: [
+      {
+        title: '1. Resumen Ejecutivo',
+        content: 'En cumplimiento de sus funciones de supervisión y control, el Área Administrativa de Gestión de Riesgo, en conjunto con el Comité Técnico, informa que el portafolio mantiene un perfil de riesgo controlado. Durante el periodo evaluado no se registraron eventos críticos, y las exposiciones relevantes se encuentran debidamente identificadas, monitoreadas y gestionadas conforme a los lineamientos internos aprobados.'
+      },
+      {
+        title: '2. Riesgo de Mercado – Exposición Relevante en Oro (XAUUSD)',
+        content: 'El Área Administrativa de Gestión de Riesgo y el Comité Técnico informan que el portafolio presenta una exposición relevante al activo XAUUSD (oro), en un contexto macroeconómico y geopolítico internacional marcado por elevada incertidumbre, tensiones geopolíticas y ajustes en expectativas de política monetaria.\n\nDesde una perspectiva técnica, el oro ha reforzado su comportamiento como activo refugio, mostrando una tendencia alcista estructural. La exposición actual no constituye una desviación no autorizada, sino que se encuentra dentro de los parámetros de riesgo evaluados y aprobados por el Comité Técnico.\n\nEn la actividad operativa se observan posiciones abiertas en XAUUSD que presentan un resultado flotante negativo. Dichas pérdidas son de carácter no realizado y, por tanto, no representan una afectación definitiva del resultado. La decisión de mantener las posiciones abiertas responde a criterios técnicos de gestión de volatilidad, evitando cierres forzados en condiciones de mercado adversas.'
+      },
+      {
+        title: '3. Evaluación del Riesgo y Medidas de Mitigación',
+        content: '- Tipo de riesgo: Mercado (volatilidad y prolongación de tendencia)\n- Probabilidad estimada: Media\n- Impacto potencial: Alto\n- Estado del riesgo: Bajo vigilancia activa',
+        items: [
+          'Monitoreo continuo del comportamiento del oro frente a eventos macroeconómicos y geopolíticos.',
+          'Control del tamaño agregado de la exposición.',
+          'Gestión activa del flotante negativo como parte del ciclo operativo.',
+          'Evaluación periódica de puntos de equilibrio y escenarios de corrección.',
+          'Coordinación permanente entre el Área de Gestión de Riesgo y el Comité Técnico.'
+        ]
+      },
+      {
+        title: '4. Conclusión Institucional',
+        content: 'El Área Administrativa de Gestión de Riesgo y el Comité Técnico concluyen que la exposición actual al oro, así como el flotante negativo observado, se encuentran dentro de un escenario de riesgo controlado. El riesgo permanece identificado, cuantificado y monitoreado, sin comprometer la estabilidad global del portafolio. Cualquier ajuste relevante será comunicado oportunamente por los canales oficiales.'
+      }
+    ]
+  },
+  { 
+    id: 'rep1', 
+    title: 'Informe de Gestión Diciembre 2025', 
+    date: '15 Dic, 2025', 
+    category: 'Mensual', 
+    summary: 'Rendimiento anual consolidado del 41.77%.',
+    highlight: 'Rendimiento anual consolidado del 41.77% alcanzado al cierre de 2025.',
+    sections: [
+      {
+        title: '1. Resumen Ejecutivo',
+        content: 'El presente informe tiene como objetivo comunicar las actualizaciones más recientes y relevantes concernientes a la gestión de activos. Nuestro equipo de análisis ha identificado oportunidades clave que se alinean con la visión a largo plazo de Caishen Capital Group.'
+      },
+      {
+        title: '2. Análisis de Rendimiento',
+        content: 'Durante el último periodo, los indicadores financieros han mostrado un comportamiento robusto frente a la volatilidad del mercado. Se destacan los siguientes puntos:',
+        items: [
+          'Incremento sostenido en el valor de los activos bajo gestión.',
+          'Optimización de los costos operativos mediante nuevas tecnologías.',
+          'Diversificación estratégica en sectores emergentes.'
+        ]
+      },
+      {
+        title: '3. Proyecciones y Próximos Pasos',
+        content: 'Basado en los datos actuales, proyectamos un crecimiento continuo para el próximo trimestre. Se recomienda a los inversores mantener sus posiciones y estar atentos a los próximos comunicados oficiales sobre ajustes tácticos en el portafolio.'
+      }
+    ]
+  }
 ];
 
 export const getPublishedNotifications = (): AdminNotification[] => {
