@@ -9,11 +9,13 @@ import {
   Lock, 
   X, 
   AlertCircle,
-  PlusCircle
+  PlusCircle,
+  EyeOff,
+  Shield
 } from 'lucide-react';
 import ShareholderProfile from './ShareholderProfile';
 
-// MOCK_USERS con PIN único reasignado por seguridad (sin números consecutivos)
+// MOCK_USERS con PIN único reasignado por seguridad
 const MOCK_USERS = [
   { id: 'admin-01', uid: '#ADM-001', name: 'Caishen Capital Group', email: 'corporativo@caishencapital.com', role: 'Super Admin', status: 'Activo', initials: 'CCG', color: 'bg-accent text-primary', shares: 300, pin: '8888' },
   { id: 'usr-220', uid: '#USR-220', name: 'Isabella Beron Garcia', email: 'i.beron@inversion.com', role: 'Accionista Preferente', status: 'Activo', initials: 'IB', color: 'bg-pink-100 text-pink-700', shares: 100, pin: '4927' },
@@ -95,6 +97,15 @@ const UserManagement: React.FC = () => {
     window.open('https://caishencapital.co/producto/acciones-minoritarias/', '_blank');
   };
 
+  const maskEmail = (email: string) => {
+    const [user, domain] = email.split('@');
+    return `${user.charAt(0)}••••@••••${domain.substring(domain.lastIndexOf('.'))}`;
+  };
+
+  const maskUID = (uid: string) => {
+    return uid.substring(0, 5) + '•••';
+  };
+
   if (selectedUser) {
     return <ShareholderProfile user={selectedUser} onBack={() => setSelectedUser(null)} />;
   }
@@ -115,9 +126,10 @@ const UserManagement: React.FC = () => {
             <PlusCircle size={20} className="transition-transform group-hover:rotate-90" />
             SOLICITAR ACCIONES
           </button>
-          <p className="text-[10px] text-text-muted font-bold uppercase tracking-tight text-center md:text-right max-w-[280px] leading-relaxed opacity-80">
-            La solicitud de acciones está sujeta a revisión y validación conforme a los lineamientos internos de la compañía.
-          </p>
+          <div className="flex items-center gap-2 px-4 py-1.5 bg-surface-subtle border border-surface-border rounded-xl">
+             <Shield size={12} className="text-accent" />
+             <span className="text-[10px] text-text-muted font-black uppercase tracking-widest">Protección de Datos Activa</span>
+          </div>
         </div>
       </header>
 
@@ -126,8 +138,8 @@ const UserManagement: React.FC = () => {
           <div className="md:col-span-8 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted size-5" />
             <input 
-              className="w-full pl-10 pr-4 py-3 rounded-xl border-surface-border text-sm focus:border-accent focus:ring-accent text-accent placeholder-text-muted bg-surface-subtle/50 font-medium transition-all" 
-              placeholder="Buscar por Nombre, Email o ID de Socio..." 
+              className="w-full pl-10 pr-4 py-3 rounded-xl border-surface-border text-sm focus:border-accent focus:ring-accent text-accent placeholder:text-text-muted bg-surface-subtle/50 font-medium transition-all" 
+              placeholder="Buscar Socio por criterios de identidad..." 
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -155,7 +167,7 @@ const UserManagement: React.FC = () => {
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-surface-subtle/50 text-text-muted text-[10px] uppercase tracking-[0.2em] font-black border-b border-surface-border">
-                <th className="px-8 py-5 w-24">ID Acceso</th>
+                <th className="px-8 py-5 w-24">ID Privado</th>
                 <th className="px-8 py-5">Identidad / Perfil</th>
                 <th className="px-8 py-5 text-center">Estatus Operativo</th>
                 <th className="px-8 py-5 text-center">Seguridad / Acceso</th>
@@ -164,7 +176,11 @@ const UserManagement: React.FC = () => {
             <tbody className="divide-y divide-surface-border">
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-surface-subtle/20 transition-colors group">
-                  <td className="px-8 py-6 text-xs font-mono font-bold text-text-muted">{user.uid}</td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono font-bold text-text-muted/60">{maskUID(user.uid)}</span>
+                    </div>
+                  </td>
                   <td className="px-8 py-6">
                     <button 
                       onClick={() => handleRequestAccess(user)}
@@ -176,7 +192,7 @@ const UserManagement: React.FC = () => {
                       <div>
                         <div className="text-sm font-black text-accent group-hover/name:text-primary transition-colors">{user.name}</div>
                         <div className="text-[10px] text-text-muted font-bold flex items-center gap-1.5 mt-0.5">
-                          <Mail size={12} className="text-accent/50" /> {user.email}
+                          <EyeOff size={10} className="text-accent/40" /> {maskEmail(user.email)}
                         </div>
                       </div>
                     </button>
